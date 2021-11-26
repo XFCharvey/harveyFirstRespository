@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.wxlogin.mapper.WeixinUserMapper">
+ 
+    <select id="findByOpenId" parameterType="string" resultType="com.cbox.wxlogin.bean.WeixinUser">
+        select t.*
+        from sys_user_weixin t
+        where rec_status='1' and openid = #{openid} 
+    </select>
+    
+    <select id="findByUnionid" parameterType="string" resultType="com.cbox.wxlogin.bean.WeixinUser">
+        select t.*
+        from sys_user_weixin t
+        where rec_status='1' and unionid = #{unionid} 
+    </select>
+    
+    <insert id="save" parameterType="hashmap">
+		INSERT INTO sys_user_weixin
+		(rec_id, openid, nickname, sex, province, city, country, headimgurl, unionid, user_id,
+		rec_status, rec_person, rec_time, rec_updateperson, rec_updatetime) 
+		VALUES 
+		(#{rec_id}, #{openid}, #{nickname}, #{sex}, #{province}, #{city}, #{country}, #{headimgurl}, #{unionid}, #{user_id},
+		'1', #{rec_person}, now(), #{rec_person}, now())
+		ON DUPLICATE KEY UPDATE
+    		headimgurl=#{headimgurl},
+    		rec_updatetime=now()
+	</insert>
+    
+    <select id="findById" parameterType="string" resultType="com.cbox.wxlogin.bean.WeixinUser">
+        select t.*
+        from sys_user_weixin t
+        where rec_status='1' and rec_id = #{rec_id} 
+    </select>
+    
+    <select id="getSysUser" parameterType="hashmap" resultType="hashmap">
+        select t.*
+        from sys_user t
+        where phonenumber = #{phonenumber} 
+    </select>
+    
+    <!-- 查询登录日志 -->
+	<!-- 查询对象 -->
+    <sql id="selectVO">
+        <![CDATA[
+            select 
+                t.rec_id,
+                t.user_name,
+                t.login_time
+            from d_user_applogin_log t
+        ]]>
+    </sql>
+ 
+    <!-- listAppLoginLog : 获取App登录日志列表数据 -->
+    <select id="listAppLoginLog" parameterType="java.util.Map" resultType="java.util.HashMap">
+        <include refid="selectVO"/>
+ 
+        where 1=1
+        <if test="user_name != null and user_name != ''">
+             and t.user_name like concat('%',#{user_name},'%')
+        </if>
+        <if test="login_time != null and login_time != ''">
+             and t.login_time like concat('%',#{login_time},'%')
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.project.projectcontractor.mapper.ProjectContractorMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.contractor_name,
+				t.project_id,
+				p.project_name,
+				t.contractor_position,
+				t.contractor_person,
+				t.contractor_phone,
+				t.contractor_level,
+				t.contractor_comment,
+				t.rec_id,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_project_contractor t
+			left join sys_user u on t.rec_person=u.user_name
+			left join d_project p on t.project_id=p.rec_id
+			
+		]]>
+	</sql>
+
+	<!-- listProjectContractor : 获取项目承建商列表数据 -->
+	<select id="listProjectContractor" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="contractor_name != null and contractor_name != ''">
+			 and t.contractor_name like concat('%',#{contractor_name},'%')
+		</if>
+		<if test="project_id != null and project_id != ''">
+			 and t.project_id=#{project_id}
+		</if>
+	</select>
+
+	<!-- getProjectContractor : 获取指定id的项目承建商数据 -->
+	<select id="getProjectContractor" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

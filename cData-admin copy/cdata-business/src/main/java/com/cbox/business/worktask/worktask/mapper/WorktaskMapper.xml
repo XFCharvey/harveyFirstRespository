@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.worktask.worktask.mapper.WorktaskMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+        <![CDATA[
+            select 
+                t.rec_id,
+                t.task_name,
+                t.task_type,
+                t.task_code,
+                t.deal_person,
+                t.project_id,
+								p.project_name,
+                t.houses_id,
+                t.relate_taskid,
+                t.customer_id,
+                t.task_status,
+                DATEDIFF(t.task_deadline,now()) as date_disparity,
+                DATEDIFF(t.task_deadline,t.finish_time) as day_over,
+                t.task_detail,
+                t.task_image,
+                t.finish_rate,
+                t.copy_person,
+                t.task_deadline,
+                t.cause_analysis,
+                t.deal_plan,
+                t.rela_num,
+                t.deal_people,
+                t.task_object,
+                t.rec_status,
+                t.rec_person,
+                t.rec_time,
+                t.rec_updateperson,
+                t.rec_updatetime,
+                u.nick_name as user_name,
+                u1.nick_name as deal_name,
+                u1.phonenumber as deal_phone
+            from d_worktask t
+            left join sys_user u on t.rec_person=u.user_name
+            left join sys_user u1 on t.deal_person=u1.user_name
+			left join d_project p on t.project_id=p.rec_id
+        ]]>
+	</sql>
+
+	<!-- listWorktask : 获取任务表列表数据 -->
+	<select id="listWorktask" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+		where t.rec_status='1'
+		<if test="rec_id != null and rec_id != ''">
+			and t.rec_id=#{rec_id}
+		</if>
+		<if test="task_name != null and task_name != ''">
+			and t.task_name like concat('%',#{task_name},'%')
+		</if>
+		<if test="houses_id != null and houses_id != ''">
+			and t.houses_id=#{houses_id}
+		</if>
+		<if test="customer_id != null and customer_id != ''">
+			and t.customer_id=#{customer_id}
+		</if>
+		<if test="task_type != null and task_type != ''">
+			and t.task_type=#{task_type}
+		</if>
+		<if test="copy_person != null and copy_person != ''">
+			and t.copy_person like concat('%',#{copy_person},'%')
+		</if>
+		<if test="deal_person != null and deal_person != ''">
+			and t.deal_person=#{deal_person}
+		</if>
+		<if test="rec_person != null and rec_person != ''">
+			and t.rec_person=#{rec_person}
+		</if>
+		<if test="task_status != null and task_status != ''">
+			and t.task_status=#{task_status}
+		</if>
+		order by DATEDIFF(t.task_deadline,now()),t.task_status
+	</select>
+
+	<!-- getWorktask : 获取指定id的任务表数据 -->
+	<select id="getWorktask" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+	<!-- getWorktaskByCode : 获取指定编号的任务表数据 -->
+	<select id="getWorktaskByCode" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		and t.task_code=#{task_code}
+	</select>
+
+	<!-- getCustomerWorktaskNum : 获取指定客户除任务类型外的任务表数据数量 -->
+	<select id="getCustomerWorktaskNum"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+		count(t.rec_id) as customer_work_num
+		from d_worktask t
+		inner join v_customer_house h on t.houses_id=h.house_id and h.rec_id=#{customer_id}
+		where t.rec_status='1' and (t.task_type='repair' or t.task_type='complain' or t.task_type='consult')
+	</select>
+
+	<!-- listWorktask : 获取预警（完成期限于今日差距小于5）任务表列表数据 -->
+	<select id="listOverdueWorktask" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		<if test="warning !=null and warning!=''">
+        	<![CDATA[
+        		and (DATEDIFF(t.task_deadline,now()) >=0 and DATEDIFF(t.task_deadline,now()) <= #{warning})
+        	]]>
+		</if>
+		<if test="alarm_num !=null and alarm_num!=''">
+        	<![CDATA[
+        		and DATEDIFF(t.task_deadline,now()) <= #{alarm_num} and t.task_status IN (0,1,2)
+        	]]>
+		</if>
+		<if test="overtime !=null and overtime !=''">
+	        <![CDATA[
+	        	and DATEDIFF(t.task_deadline,now()) <= -#{overtime}
+        	]]>
+		</if>
+		<if test="task_name != null and task_name != ''">
+			and t.task_name like concat('%',#{task_name},'%')
+		</if>
+		<if test="task_type != null and task_type != ''">
+			and t.task_type=#{task_type}
+		</if>
+		<if test="deal_person != null and deal_person != ''">
+			and t.deal_person=#{deal_person}
+		</if>
+		<if test="rec_person != null and rec_person != ''">
+			and t.rec_person=#{rec_person}
+		</if>
+		<if test="task_status != null and task_status != ''">
+			and t.task_status = #{task_status}
+		</if>
+		order by DATEDIFF(t.task_deadline,now()),t.task_status
+		<if test="limit != null and limit != ''">
+			limit #{limit}
+		</if>
+	</select>
+
+	<!-- getWorktaskTypeGroup : 统计任务工单类型比例分布饼状图 -->
+	<select id="getWorktaskTypeGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+            select 
+	            IFNULL(SUM(case when task_type='complain' then 1 else 0 end),0) as complaint_count,
+	            IFNULL(SUM(case when task_type='consult' then 1 else 0 end),0) as consult_count,
+	            IFNULL(SUM(case when task_type='repair' then 1 else 0 end),0) as repair_count,
+	            IFNULL(SUM(case when task_type='task' then 1 else 0 end),0) as task_count  
+            from d_worktask t 
+           	where t.rec_status='1' 
+        ]]>
+	</select>
+
+	<!-- listWorktaskCountOfUser : 获取预警任务的用户及工作任务数量 -->
+	<select id="listWorktaskCountOfUser"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+            select DISTINCT
+	            t.deal_person,
+	            u.nick_name,
+				(select  COUNT(1) from d_worktask w where w.rec_status='1' and w.deal_person=t.deal_person and (DATEDIFF(w.task_deadline,now()) >=0 and DATEDIFF(w.task_deadline,now()) <= 5)) as task_count 
+            from d_worktask t 
+            left join sys_user u on u.user_name=t.deal_person 
+            where t.rec_status='1'
+            	and t.deal_person is not null 
+            	and t.deal_person !='' 
+			ORDER BY task_count desc
+            	limit 0,6
+        ]]>
+	</select>
+</mapper>

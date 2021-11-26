@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.survey.surveydetail.mapper.SurveyDetailMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.survey_id,
+				s.survey_name,
+				t.customer_name,
+				t.send_time,
+				t.survey_time,
+				t.project_name,
+				t.counselor,
+				t.counselor_f,
+				t.engineer_name,
+				t.node_name,
+				t.house_type,
+				t.house_area,
+				t.total_price,
+				t.house_name,
+				t.customer_name,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_survey_Detail t
+			left join sys_user u on t.rec_person=u.user_name
+			left join d_survey s on t.survey_id=s.rec_id
+		]]>
+	</sql>
+
+	<!-- listSurveyDetail : 获取客户调研列表数据 -->
+	<select id="listSurveyDetail" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		<if test="survey_id != null and survey_id != ''">
+			and t.survey_id=#{survey_id}
+		</if>
+		<if test="send_time != null and send_time != ''">
+			and t.send_time like concat('%',#{send_time},'%')
+		</if>
+		<if test="survey_time != null and survey_time != ''">
+			and t.survey_time like concat('%',#{survey_time},'%')
+		</if>
+		<if test="project_name != null and project_name != ''">
+			and t.project_name like concat('%',#{project_name},'%')
+		</if>
+		<if test="counselor != null and counselor != ''">
+			and t.counselor like concat('%',#{counselor},'%')
+		</if>
+		<if test="counselor_f != null and counselor_f != ''">
+			and t.counselor_f like concat('%',#{counselor_f},'%')
+		</if>
+		<if test="engineer_name != null and engineer_name != ''">
+			and t.engineer_name like concat('%',#{engineer_name},'%')
+		</if>
+		<if test="node_name != null and node_name != ''">
+			and t.node_name like concat('%',#{node_name},'%')
+		</if>
+		<if test="house_type != null and house_type != ''">
+			and t.house_type like concat('%',#{house_type},'%')
+		</if>
+		<if test="house_area != null and house_area != ''">
+			and t.house_area like concat('%',#{house_area},'%')
+		</if>
+		<if test="total_price != null and total_price != ''">
+			and t.total_price like concat('%',#{total_price},'%')
+		</if>
+		<if test="customer_id != null and customer_id != ''">
+			and t.customer_id like concat('%',#{customer_id},'%')
+		</if>
+	</select>
+
+	<!-- getSurveyDetail : 获取指定id的客户调研数据 -->
+	<select id="getSurveyDetail" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

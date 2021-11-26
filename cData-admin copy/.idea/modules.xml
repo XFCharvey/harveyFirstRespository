@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/cData-admin.iml" filepath="$PROJECT_DIR$/cData-admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cdata-base/cdata-base.iml" filepath="$PROJECT_DIR$/cdata-base/cdata-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cdata-business/cdata-business.iml" filepath="$PROJECT_DIR$/cdata-business/cdata-business.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cdata-framework/cdata-framework.iml" filepath="$PROJECT_DIR$/cdata-framework/cdata-framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cdata-quartz/cdata-quartz.iml" filepath="$PROJECT_DIR$/cdata-quartz/cdata-quartz.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cdata-system/cdata-system.iml" filepath="$PROJECT_DIR$/cdata-system/cdata-system.iml" />
+    </modules>
+  </component>
+</project>

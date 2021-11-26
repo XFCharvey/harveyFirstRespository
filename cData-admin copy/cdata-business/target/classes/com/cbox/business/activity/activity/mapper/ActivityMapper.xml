@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.activity.activity.mapper.ActivityMapper">
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_id,
+				t.question_id,
+				q.q_name,
+				t.act_name,
+				t.act_attr,
+				t.act_img,
+				t.act_type,
+				t.begin_time,
+				t.end_time,
+				t.sign_endtime,
+				t.auto_check,
+				t.act_status,
+				t.check_time,
+				t.act_range_dept,
+				t.act_range,
+				t.coop_unit,
+				t.act_quota,
+				t.act_join_num,
+				t.ques_num,
+				t.act_code,
+				t.invitation_num,
+				t.join_degree,
+				t.dept_id,
+				d.dept_name,
+				t.live_person,
+				t.live_push_url, 
+				t.live_play_url,
+				t.act_report_img,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name,
+				u1.nick_name as live_person_name
+			from d_activity t
+			left join sys_user u on t.rec_person=u.user_name
+			left join sys_user u1 on t.live_person=u1.user_name
+			left join sys_dept d on t.dept_id=d.dept_id
+			left join d_question_bank q on t.question_id=q.rec_id
+		]]>
+	</sql>
+
+	<!-- 单挑查询 -->
+	<sql id="selectAllVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_id,
+				t.question_id,
+				q.q_name,
+				t.act_name,
+				t.act_attr,
+				t.act_img,
+				t.act_type,
+				cast(t.act_detail as char) as act_detail,
+				cast(t.act_report as char) as act_report,
+				t.begin_time,
+				t.end_time,
+				t.sign_endtime,
+				t.auto_check,
+				t.act_status,
+				t.check_time,
+				t.act_range_dept,
+				t.act_report_img,
+				t.act_range,
+				t.coop_unit,
+				t.act_quota,
+				t.act_join_num,
+				t.ques_num,
+				t.act_code,				
+				t.invitation_num,
+				t.join_degree,
+				t.dept_id,
+				d.dept_name,
+				t.live_person,
+				t.live_push_url, t.live_play_url,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name,
+				u1.nick_name as live_person_name
+			from d_activity t
+			left join sys_user u on t.rec_person=u.user_name
+			left join sys_user u1 on t.live_person=u1.user_name
+			left join sys_dept d on t.dept_id=d.dept_id
+			left join d_question_bank q on t.question_id=q.rec_id
+		]]>
+	</sql>
+
+	<!-- listCommodity : 获取线下活动表列表数据 -->
+	<select id="listActivity" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		<if test="is_valid != null and is_valid !=''">
+			and (t.act_status='0' or t.act_status='1' or
+			t.act_status='2')
+		</if>
+		<if test="act_name != null and act_name != ''">
+			and t.act_name like concat('%',#{act_name},'%')
+		</if>
+		<if test="project_id != null and project_id != ''">
+			and t.project_id=#{project_id}
+		</if>
+		<if test="rec_id != null and rec_id != ''">
+			and t.rec_id=#{rec_id}
+		</if>
+		<if test="begin_time != null and begin_time != ''">
+			and t.begin_time like concat(#{begin_time},'%')
+		</if>
+		<if test="end_time != null and end_time != ''">
+			and t.end_time like concat(#{end_time},'%')
+		</if>
+		<if test="act_attr != null and act_attr != ''">
+			and t.act_attr like concat('%',#{act_attr},'%')
+		</if>
+		<if test="act_status != null and act_status != ''">
+			and t.act_status = #{act_status}
+		</if>
+		<if test="act_type != null and act_type != ''">
+			and t.act_type = #{act_type}
+		</if>
+
+		<choose>
+			<when test="sort_heat != null and sort_heat != ''">
+				order by t.join_degree desc
+			</when>
+			<otherwise>
+				order by t.rec_updatetime desc
+			</otherwise>
+		</choose>
+
+		<if test="limit != null and limit != ''">
+			limit #{limit}
+		</if>
+
+	</select>
+
+
+	<!-- getCommodity : 获取指定id的线下活动表数据 -->
+	<select id="getActivity" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectAllVO" />
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+	<select id="invitationRange" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		select user_id from sys_user where status=0 and del_flag=0
+		and (dept_id = #{deptid} OR dept_id IN ( SELECT t.dept_id FROM
+		sys_dept t WHERE find_in_set(#{deptid}, ancestors)))
+	</select>
+
+	<select id="countinvitationNum" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		select count(*) as invitationNum from sys_user where
+		status='1' and del_flag=0
+		and (dept_id = #{act_range_dept} OR dept_id
+		IN ( SELECT t.dept_id FROM
+		sys_dept t WHERE
+		find_in_set(#{act_range_dept}, ancestors)))
+	</select>
+
+
+	<!-- 获取30天内进行中的活动,按活动时间、部门级别排序 -->
+	<select id="listActivityRecently30" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="selectVO" />
+		where t.rec_status='1' and (t.act_status='0' or t.act_status='1' or
+		t.act_status='2')
+		and t.begin_time between CURDATE() AND
+		DATE_ADD(CURDATE(), INTERVAL 31 DAY)
+		order by t.end_time asc,
+		d.dept_type asc
+	</select>
+
+	<select id="listLiveActivity" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="selectVO" />
+		where t.rec_status='1'and and (t.act_status='0' or t.act_status='1' or
+		t.act_status='2')
+
+		<choose>
+			<when test="dept_id !=null and dept_id != ''">
+				and (t.live_person = #{live_person} or
+				t.dept_id=#{dept_id})
+			</when>
+			<otherwise>
+				and t.live_person=#{live_person}
+			</otherwise>
+		</choose>
+
+	</select>
+</mapper>

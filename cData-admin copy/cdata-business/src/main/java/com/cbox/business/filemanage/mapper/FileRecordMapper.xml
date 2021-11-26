@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.filemanage.mapper.FileRecordMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+			select 
+				t.id,
+				t.org_name orgName,
+				t.server_local_name serverLocalName,
+				t.server_local_path serverLocalPath,
+				t.network_path networkPath,
+				t.upload_type uploadType,
+				t.md5_value md5Value,
+				t.file_size fileSize,
+				t.is_merge isMerge,
+				t.is_zone isZone,
+				t.zone_total zoneTotal,
+				t.zone_date zoneDate,
+				t.zone_merge_date zoneMergeDate,
+				t.file_type fileType,
+				t.upload_device uploadDevice,
+				t.upload_ip uploadIp,
+				t.upload_count uploadCount,
+				t.download_count downloadCount,
+				t.storage_date storageDate,
+				t.create_time createTime
+			from d_sys_file_record t
+	</sql>
+	
+ 	<select id="getById" parameterType="string" resultType="com.cbox.business.filemanage.entity.FileRecord">
+		<include refid="selectVO"/>
+		where id=#{id}
+	</select>
+	
+	<select id="listByIds" parameterType="string" resultType="com.cbox.business.filemanage.entity.FileRecord">
+		<include refid="selectVO"/>
+		where id in
+        <foreach item="item" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</select>
+
+	<insert id="save">
+		insert into d_sys_file_record
+		(id, org_name, server_local_name, server_local_path, network_path, upload_type, md5_value, file_size, 
+		is_merge, is_zone, zone_total, zone_date, zone_merge_date, file_type,
+		upload_device, upload_ip, upload_count, download_count, storage_date, create_by, create_time, update_by, update_time)
+		values
+		(#{id}, #{orgName}, #{serverLocalName}, #{serverLocalPath}, #{networkPath}, #{uploadType}, #{md5Value}, #{fileSize}, 
+		#{isMerge}, #{isZone}, #{zoneTotal}, #{zoneDate}, #{zoneMergeDate}, #{fileType}, 
+		#{uploadDevice}, #{uploadIp}, #{uploadCount}, #{downloadCount}, #{storageDate}, #{createBy}, now(), #{createBy}, now())
+	</insert>
+	<update id="update">
+		UPDATE d_sys_file_record 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="orgName != null">org_name = #{orgName}, </if>
+			<if test="serverLocalName != null">server_local_name = #{serverLocalName}, </if>
+			<if test="serverLocalPath != null">server_local_path = #{serverLocalPath}, </if>
+			<if test="networkPath != null">network_path = #{networkPath}, </if>
+			<if test="uploadType != null">upload_type = #{uploadType}, </if>
+			<if test="md5Value != null">md5_value = #{md5Value}, </if>
+			<if test="fileSize != null">file_size = #{fileSize}, </if>
+			<if test="isMerge != null">is_merge = #{isMerge}, </if>
+			<if test="isZone != null">is_zone = #{isZone}, </if>
+			<if test="zoneTotal != null">zone_total = #{zoneTotal}, </if>
+			<if test="zoneDate != null">zone_date = #{zoneDate}, </if>
+			<if test="zoneMergeDate != null">zone_merge_date = #{zoneMergeDate}, </if>
+			<if test="fileType != null">file_type = #{fileType}, </if>
+			<if test="uploadDevice != null">upload_device = #{uploadDevice}, </if>
+			<if test="uploadIp != null">upload_ip = #{uploadIp}, </if>
+			<if test="uploadCount != null">upload_count = #{uploadCount}, </if>
+			<if test="downloadCount != null">download_count = #{downloadCount}, </if>
+			<if test="storageDate != null">storage_date = #{storageDate}, </if>
+			<if test="updateBy != null">update_by = #{updateBy}, </if>
+			update_time = now()
+		</trim>
+		WHERE id = #{id};
+	</update>
+	
+	<delete id="deleteById">
+		delete from d_sys_file_record where id=#{id}
+	</delete>
+	
+	<delete id="deleteBatchIds">
+		delete from d_sys_file_record t
+		where t.id in
+        <foreach item="item" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</delete>
+	
+	<select id="selectList" parameterType="string" resultType="com.cbox.business.filemanage.entity.FileRecord">
+		<include refid="selectVO"/>
+		where t.md5_value=#{md5Value} and upload_type=${uploadType}
+	</select>
+	
+</mapper>

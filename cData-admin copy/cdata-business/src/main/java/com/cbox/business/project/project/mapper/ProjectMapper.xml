@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.project.project.mapper.ProjectMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+        <![CDATA[
+            select 
+                t.rec_id,
+                t.proj_guid,
+                t.pro_groupid,
+                t.project_name,
+                t.project_type,
+                t.project_person,
+                t.project_range,
+                t.project_img,
+                t.repair_person,
+                t.gx_admin,
+                t.project_code,
+                t.node_num,
+                t.node_finish_num,
+                t.official_micro_num,
+                t.along_num,
+                t.redLine_out_defect,
+                t.redLine_in_defect,
+                t.difference_num,
+                t.contractor_num,
+                t.risk_num,
+                t.sale_num,
+                t.info_num,
+                t.project_detail,
+                t.begin_time,
+                t.end_time,
+                t.project_status,
+                t.rec_status,
+                t.rec_person,
+                t.rec_time,
+                t.rec_updateperson,
+                t.rec_updatetime,
+                u.nick_name as user_name
+            from d_project t
+            left join sys_user u on t.project_person=u.user_name
+        ]]>
+	</sql>
+
+	<!-- listProject : 获取项目表列表数据 -->
+	<select id="listProject" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		<if test="project_name != null and project_name != ''">
+			and t.project_name like concat('%',#{project_name},'%')
+		</if>
+		<if test="project_type != null and project_type != ''">
+			and t.project_type=#{project_type}
+		</if>
+		<if test="project_person != null and project_person != ''">
+			and t.project_person=#{project_person}
+		</if>
+		<if test="project_status != null and project_status != ''">
+			and t.project_status=#{project_status}
+		</if>
+		<if test="is_warning != null and is_warning != ''">
+			and (t.project_status='2' or t.project_status='3')
+		</if>
+		order by t.end_time,t.rec_updatetime desc
+	</select>
+ 
+	<!-- getProject : 获取指定id的项目表数据 -->
+	<select id="getProject" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+	<!-- getProjectFollowTotal : 获取指定id的项目里所有用户的阿隆与官位关注数 -->
+	<select id="getProjectFollowTotal" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+			IFNULL(SUM(official_micro_follow),0) as official_micro_follow_total,
+			IFNULL(SUM(along_follow),0) as along_follow_total,
+			COUNT(customer_id) as customer_total
+		from v_customer_houses_project
+		where project_id=#{project_id} and rec_status='1'
+		order by h_rec_updatetime desc,ph_rec_updatetime desc
+	</select>
+	
+	
+
+</mapper>

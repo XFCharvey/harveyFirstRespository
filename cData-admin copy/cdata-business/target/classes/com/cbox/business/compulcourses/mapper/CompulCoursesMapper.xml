@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.compulcourses.mapper.CompulCoursesMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.course_id,
+				d.rec_id as info_id,
+				d.info_menuid,
+				m.rec_lname,
+				d.info_title,
+				d.title_img,
+				d.info_type,
+				d.info_video,
+				d.info_video_len,
+				d.video_type,
+				f.server_local_path,
+				f.network_path,
+				d.info_level,
+				d.info_validity_term,
+				d.info_read_time,
+				d.info_status,
+				d.is_course,
+				d.question_id,
+				d.course_score,
+				d.publish_unit,
+				(case d.publish_person when '' then d.info_source when null then d.info_source else d.publish_person end) as publish_person,
+				d.publish_time,
+				d.filter_result,
+				d.check_person,
+				d.check_time,
+				d.check_reject_reason,
+				d.praise_num,
+				d.comment_num,
+				d.read_num,
+				d.play_num,
+				t.plan_year,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name,
+				dp.dept_name
+			from d_compulsory_courses t
+			left join d_info d on t.course_id=d.rec_id
+			left join s_info_menu m on d.info_menuid=m.rec_id
+			left join d_sys_file_record f on d.info_video=f.id
+			left join sys_user u on t.rec_person=u.user_name
+			left join sys_dept dp on d.publish_unit=dp.dept_id
+		]]>
+	</sql>
+
+	<!-- listCompulCourses : 获取必修课程安排表列表数据 -->
+	<select id="listCompulCourses" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id=#{rec_id}
+		</if>
+		<if test="course_id != null and course_id != ''">
+			 and t.course_id=#{course_id}
+		</if>
+		<if test="plan_year != null and plan_year != ''">
+			 and t.plan_year=#{plan_year}
+		</if>
+	</select>
+
+	<!-- getCompulCourses : 获取指定id的必修课程安排表数据 -->
+	<select id="getCompulCourses" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+	<!-- 通过课程ID查询必修表 -->
+	<select id="getCompulCoursesByCourseID" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.course_id=#{course_id} and t.plan_year=#{plan_year}
+	</select>
+	
+	<select id="getCountNum" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+			count(*) as countNum 
+			from d_compulsory_courses 
+		where rec_status='1' and plan_year=#{plan_year}
+		
+	</select>
+	
+    <!-- listCompulCoursesByUser : 根据用户获取判断必修课程是否加入计划，且成绩是否合格  -->
+	<select id="listCompulCoursesByUser"  parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+			t.rec_id,
+			t.course_id,
+			d.rec_id as info_id,
+			d.info_title,
+			d.title_img,
+			d.info_menuid,
+			m.rec_lname,
+			d.info_type,
+			d.question_id,
+			e.is_passed,
+			l.course_type,
+			l.learn_person,
+			l.learn_time,
+			l.answer_score,
+			l.answer_time,
+			l.learn_year,
+			l.answer_status,
+			t.plan_year,
+			t.rec_status,
+			t.rec_person,
+			t.rec_time,
+			t.rec_updateperson,
+			t.rec_updatetime,
+			u.nick_name as user_name
+		from d_compulsory_courses t
+		left join d_info d on t.course_id=d.rec_id
+		left join sys_user u on t.rec_person=u.user_name
+		left join s_info_menu m on d.info_menuid=m.rec_id
+		left join d_info_learn l on d.rec_id = l.info_id and l.learn_person=#{learn_person} and l.learn_year=#{plan_year}
+		left join d_exam_record e on d.question_id= e.qbank_id and e.exam_person=#{learn_person}
+		where t.rec_status='1' and t.plan_year=#{plan_year}
+	</select>
+	
+	
+
+</mapper>

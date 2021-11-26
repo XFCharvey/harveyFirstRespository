@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.reward.mapper.RewardMapper">
+
+	<!-- getExamRecord : 获取手机号或deviceid是否已经抽奖过 -->
+	<select id="getExamRecord" parameterType="hashmap" resultType="hashmap">
+		select t.rec_id, t.reward_id, t.person_phone, t.reward_status, a.reward_name
+		from d_exam_record t
+		left join d_question_reward a on t.reward_id=a.rec_id
+		where t.qbank_id=#{qbank_id} and ( t.person_deviceid=#{deviceid}
+		<if test="phone != null and phone != ''">
+			 or t.person_phone=#{phone}
+		</if>
+		)
+		order by t.rec_id desc
+		limit 1
+	</select>
+	<select id="getExamRecordByPhone" parameterType="hashmap" resultType="hashmap">
+		select t.rec_id, t.reward_id, t.reward_status
+		from d_exam_record t
+		where t.qbank_id=#{qbank_id} and t.person_phone=#{phone}
+		order by t.rec_id desc
+		limit 1
+	</select>
+	
+	<select id="countReward" resultType="int">
+		select count(*) cot
+		from d_exam_record t
+		where reward_id is not null
+		and reward_id != '8'
+		and qbank_id =#{qbank_id}
+	</select>
+	
+	<update id="updateExamRecordReward" parameterType="hashmap">
+		update d_exam_record
+		set reward_id=#{reward_id}, reward_status='0'
+		where reward_id is null and rec_id=#{rec_id}
+	</update>
+
+</mapper>

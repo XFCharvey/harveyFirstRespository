@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.project.projectrisk.mapper.ProjectRiskMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_id,
+				t.risk_name,
+				t.risk_level,
+				t.risk_status,
+				t.risk_plan,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_project_risk t
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listProjectRisk : 获取项目风险列表数据 -->
+	<select id="listProjectRisk" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			 and t.project_id like concat('%',#{project_id},'%')
+		</if>
+		<if test="risk_name != null and risk_name != ''">
+			 and t.risk_name like concat('%',#{risk_name},'%')
+		</if>
+		<if test="risk_level != null and risk_level != ''">
+			 and t.risk_level like concat('%',#{risk_level},'%')
+		</if>
+		<if test="risk_status != null and risk_status != ''">
+			 and t.risk_status like concat('%',#{risk_status},'%')
+		</if>
+		<if test="risk_plan != null and risk_plan != ''">
+			 and t.risk_plan like concat('%',#{risk_plan},'%')
+		</if>
+	</select>
+
+	<!-- getProjectRisk : 获取指定id的项目风险数据 -->
+	<select id="getProjectRisk" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

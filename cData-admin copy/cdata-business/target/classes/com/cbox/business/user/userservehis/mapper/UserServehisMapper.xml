@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.user.userservehis.mapper.UserServehisMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.serve_person,
+				u1.nick_name as serve_name,
+				t.served_customer,
+				c.customer_name,
+                c.customer_id,
+                c.customer_type,
+                c.customer_status,
+                c.customer_phone,
+                c.customer_photo,
+                c.customer_lable,
+                c.customer_addr,
+				t.serve_count,
+				t.serve_time,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_user_servehis t
+			left join sys_user u on t.rec_person=u.user_name
+			left join sys_user u1 on t.serve_person=u1.user_name
+			left join d_customer c on t.served_customer=c.rec_id
+		]]>
+	</sql>
+
+	<!-- listUserServehis : 获取员工用户服务历史列表数据 -->
+	<select id="listUserServehis" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="serve_person != null and serve_person != ''">
+			 and t.serve_person=#{serve_person}
+		</if>
+		<if test="served_customer != null and served_customer != ''">
+			 and t.served_customer=#{served_customer}
+		</if>
+		<if test="serve_count != null and serve_count != ''">
+			 and t.serve_count=#{serve_count}
+		</if>
+		<if test="serve_time != null and serve_time != ''">
+			 and t.serve_time like concat(#{serve_time},'%')
+		</if>
+		order by t.serve_time desc 
+		<if test="limit !=null and limit !=''">
+			limit #{limit}
+		</if>
+	</select>
+
+	<!-- getUserServehis : 获取指定id的员工用户服务历史数据 -->
+	<select id="getUserServehis" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

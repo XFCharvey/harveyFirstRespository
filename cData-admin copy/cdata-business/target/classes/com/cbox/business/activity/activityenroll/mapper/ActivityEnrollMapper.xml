@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.activity.activityenroll.mapper.ActivityEnrollMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.activity_id,
+				a.act_name,
+				a.act_attr,
+				a.dept_id,
+				t.e_name,
+				t.e_tell,
+				t.e_dept,
+				d.dept_name,
+				t.e_hope,
+				t.e_time,
+				t.e_person,
+				t.e_status,
+				t.check_person,
+				t.check_time,
+				t.check_reject_reason,
+				u.nick_name as user_name
+			from d_activity_enroll t
+			left join d_activity a on t.activity_id=a.rec_id
+			left join sys_dept d on t.e_dept = d.dept_id
+			left join sys_user u on t.e_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listActivityEnroll : 获取活动报名登记列表数据 -->
+	<select id="listActivityEnroll" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where 1=1
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id=#{rec_id}
+		</if>
+		<if test="dept_id != null and dept_id != ''">
+			and a.dept_id=#{dept_id}
+		</if>
+		<if test="activity_id != null and activity_id != ''">
+			 and t.activity_id=#{activity_id}
+		</if>
+		<if test="e_dept != null and e_dept != ''">
+			 and t.e_dept=#{e_dept}
+		</if>
+		<if test="e_time != null and e_time != ''">
+			 and t.e_time like concat(#{e_time},'%')
+		</if>
+		<if test="e_person != null and e_person != ''">
+			 and t.e_person=#{e_person}
+		</if>
+		<if test="e_status != null and e_status != ''">
+			 and t.e_status=#{e_status}
+		</if>
+		order by t.e_time desc 
+	</select>
+
+	<!-- getActivityEnroll : 获取指定id的活动报名登记数据 -->
+	<select id="getActivityEnroll" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		where 
+		<if test="e_person != null and e_person != '' and activity_id != null and activity_id != ''">
+			 t.e_person=#{e_person} and t.activity_id=#{activity_id}
+		</if>
+		<if test="rec_id != null and rec_id != '' ">
+			 t.rec_id=#{rec_id} 
+		</if>
+		
+	</select>
+	
+	<!-- getActivityEnroll : 获取指定id的活动报名登记数据 -->
+	<select id="getActivityEnrollTotal" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+			count(rec_id) as enrollTotalNum
+		fron d_activity_enroll
+		where e_person=#{e_person} and e_time like concat(#{e_time},'%')
+		
+	</select>
+	
+
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.user.leavemessage.mapper.LeaveMessageMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.leave_message,
+				t.leave_img,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_user_leave_message t
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listLeaveMessage : 获取用户app咨询留言列表数据 -->
+	<select id="listLeaveMessage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="rec_person != null and rec_person != ''">
+			 and t.rec_person=#{rec_person}
+		</if>
+		order by rec_time desc
+	</select>
+
+	<!-- getLeaveMessage : 获取指定id的用户app咨询留言数据 -->
+	<select id="getLeaveMessage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

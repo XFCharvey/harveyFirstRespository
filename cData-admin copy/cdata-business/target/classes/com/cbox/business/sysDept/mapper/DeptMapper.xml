@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.sysDept.mapper.DeptMapper">
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				d.dept_id, 
+				d.parent_id, 
+				d.ancestors, 
+				d.dept_name, 
+				d.dept_logo,
+				d.dept_busi,
+				d.order_num, 
+				d.leader, 
+				d.dept_type,
+				t.type_name,
+				d.dept_level,
+				d.phone, 
+				d.email, 
+				d.status, 
+				d.del_flag, 
+				d.create_by, 
+				d.create_time,
+				d.update_by,
+				d.update_time
+       		from sys_dept d
+			left join d_dept_type t on d.dept_type=t.rec_id
+		]]>
+	</sql>
+	
+	<select id="listDept" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		where d.del_flag = '0' 
+		<if test="dept_id != null and dept_id !=''">
+			and (d.dept_id = #{dept_id} or d.ancestors like concat('%',#{dept_id},'%'))
+		</if>
+		<if test="dept_level != null and dept_level !=''">
+			and d.dept_level = #{dept_level}
+		</if>
+		<if test="status != null and status !=''">
+			and d.status = #{status}
+		</if>
+		<if test="dept_type != null and dept_type !=''">
+			and d.dept_type = #{dept_type}
+		</if>
+		<if test="level != null and level !='' ">
+			<![CDATA[ and d.parent_id > #{level} ]]>
+		</if>
+		order by order_num asc
+	</select>
+
+	<select id="getDept" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+			where d.del_flag = '0' 
+			and d.dept_id = #{dept_id}
+	</select>
+
+	<update id="updateDept">
+		update sys_dept set ancestors=REPLACE (ancestors,#{ance},#{newanc}) where ancestors like concat(#{ance1},'%')
+	</update>
+
+</mapper>

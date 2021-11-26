@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.info.infomenu.mapper.InfoMenuMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.parent_id,
+				s.menu_name as parent_menu_name,
+				t.ancestors,
+				t.rec_lname,
+				t.menu_name,
+				t.menu_desc,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from s_info_menu t
+			left join sys_user u on t.rec_person=u.user_name
+			left join s_info_menu s on t.parent_id=s.rec_id
+		]]>
+	</sql>
+
+	<!-- listInfoMenu : 获取资讯分类目录列表数据 -->
+	<select id="listInfoMenu" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id=#{rec_id}
+		</if>
+		<if test="parent_id != null and parent_id != ''">
+			 and t.parent_id=#{parent_id}
+		</if>
+		<if test="rec_lname != null and rec_lname != ''">
+			 and t.rec_lname like concat('%',#{rec_lname},'%')
+		</if>
+		<if test="menu_name != null and menu_name != ''">
+			 and t.menu_name like concat('%',#{menu_name},'%')
+		</if>
+		<if test="menu_desc != null and menu_desc != ''">
+			 and t.menu_desc=#{menu_desc}
+		</if>
+	</select>
+
+	<!-- getInfoMenu : 获取指定id的资讯分类目录数据 -->
+	<select id="getInfoMenu" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+	
+	<select id="listInfoMenuAndSmalllevel" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1' and (t.rec_id=#{rec_id} or t.ancestors like concat(#{ancestors},',',#{rec_id},'%'))
+		
+	</select>
+	
+	<update id="updateInfoMenu">
+		update s_info_menu set ancestors=REPLACE (ancestors,#{ance},#{newanc}) where ancestors like concat(#{ance1},'%')
+	</update>
+	
+	<update id="updateInfoMenulname">
+		update s_info_menu set rec_lname=REPLACE (rec_lname,#{lname},#{slname}) where rec_lname like concat(#{lname},'%')
+	</update>
+	
+	<select id="listInfoMenuSort" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+			t2.parent_id,
+			t3.menu_name,
+			max(t1.rec_updatetime) as LatestTime
+		from d_info t1
+		inner join s_info_menu t2 on t1.info_menuid = t2.rec_id
+		left join s_info_menu t3 on t2.parent_id=t3.rec_id
+		group by t2.parent_id
+		order by max(t1.rec_updatetime) desc
+	</select>
+
+	<select id="listInfoMenuTwo" parameterType="java.util.Map" resultType="java.util.HashMap">
+		 <include refid="selectVO"/>
+		where t.rec_status='1' and t.parent_id &gt; 0 
+	</select>
+</mapper>

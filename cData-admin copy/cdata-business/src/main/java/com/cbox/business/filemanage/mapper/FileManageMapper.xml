@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.filemanage.mapper.FileManageMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.id,
+				t.org_name orgName,
+				t.server_local_name serverLocalName,
+				t.server_local_path serverLocalPath,
+				t.network_path networkPath,
+				t.upload_type uploadType,
+				t.md5_value md5Value,
+				t.file_size fileSize,
+				t.is_merge isMerge,
+				t.is_zone isZone,
+				t.zone_total zoneTotal,
+				t.zone_date zoneDate,
+				t.zone_merge_date zoneMergeDate,
+				t.file_type fileType,
+				t.upload_device uploadDevice,
+				t.upload_ip uploadIp,
+				t.upload_count uploadCount,
+				t.download_count downloadCount,
+				t.storage_date storageDate,
+				t.create_by createBy,
+				t.create_time createTime,
+				t.update_time updateTime
+			from d_sys_file_record t
+		]]>
+	</sql>
+
+	<!-- listFileManage : 获取文件管理列表数据 -->
+	<select id="listFileManage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where 1=1
+		and t.create_by=#{curr_user_id}
+		<if test="org_name != null and org_name != ''">
+			 and t.org_name like concat('%', #{org_name},'%')
+		</if>
+		<if test="file_type != null and file_type != ''">
+			 and t.file_type = #{file_type}
+		</if>
+		order by t.update_time desc
+	</select>
+
+	<!-- getFileManage : 获取指定id的文件管理数据 -->
+	<select id="getFileManage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		
+		where 1=1
+		and t.id=#{id}
+	</select>
+	
+	<!-- getFileByIds : 获取指定ids的文件信息 -->
+	<select id="getFileByIds" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+				t.id,
+				t.org_name orgName,
+				t.is_merge isMerge,
+				t.id fileId,
+				t.org_name fileName,
+				t.file_size fileSize,
+				t.file_type fileType,
+				t.network_path networkPath,
+				t.is_merge*100 percent
+			from d_sys_file_record t
+		where  t.id in
+		<foreach item="item" collection="id" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</select>
+	
+
+</mapper>

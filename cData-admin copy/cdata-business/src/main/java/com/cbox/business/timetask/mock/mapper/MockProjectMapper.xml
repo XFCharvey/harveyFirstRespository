@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.timetask.mock.mapper.MockProjectMapper">
+	<sql id="selectGroupVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.proj_guid,
+				t.group_id,
+				t.group_name,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime
+			from d_project_group t
+		]]>
+	</sql>
+	
+	<select id="getGroupByGuid" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectGroupVO"/>
+		where t.rec_status='1' 
+		<if test="rec_id != null and rec_id != ''">
+			and t.rec_id=#{rec_id}
+		</if>
+		<if test="proj_guid != null and proj_guid != ''">
+			and t.proj_guid=#{proj_guid}
+		</if>
+	</select>
+	
+	<sql id="selectProjectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+                t.proj_guid,
+                t.pro_groupid,
+                t.project_name,
+                t.project_type,
+                t.project_person,
+                t.project_img,
+                t.node_num,
+                t.node_finish_num,
+                t.official_micro_num,
+                t.along_num,
+                t.redLine_out_defect,
+                t.redLine_in_defect,
+                t.difference_num,
+                t.risk_num,
+                t.sale_num,
+                t.info_num,
+                t.project_detail,
+                t.begin_time,
+                t.end_time,
+                t.project_status,
+                t.rec_status,
+                t.rec_person,
+                t.rec_time,
+                t.rec_updateperson,
+                t.rec_updatetime
+			from d_project t
+		]]>
+	</sql>
+	<select id="getProjectByGuid" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectProjectVO"/>
+		where t.rec_status='1' 
+		<if test="rec_id != null and rec_id != ''">
+			and t.rec_id=#{rec_id}
+		</if>
+		<if test="proj_guid != null and proj_guid != ''">
+			and t.proj_guid=#{proj_guid}
+		</if>
+	</select>
+	
+	<!-- listProject : 获取项目表列表数据 -->
+    <select id="listProject" parameterType="java.util.Map" resultType="java.util.HashMap">
+        <include refid="selectProjectVO"/>
+ 
+        where t.rec_status='1'
+        order by t.end_time
+    </select>
+    
+    <!-- listHousesByStatus : 获取未售 和 已交付(无总价)的房间数据 -->
+    <select id="listHousesByStatus" parameterType="java.util.Map" resultType="java.util.HashMap">
+        select t.* from d_project_houses t 
+        where (t.house_status='0' or (t.house_status='2' and  t.total_price is null)) 
+        and t.project_id=#{project_id}
+    </select>
+    
+    <!-- 批量插入房间 -->
+	<insert id="insertHousesBatch" parameterType="hashmap">
+		insert into d_project_houses
+		(project_id, proj_guid, project_guid, house_name,house_type,house_area,house_buildarea,
+		rec_person,rec_time,rec_updateperson,rec_updatetime,rec_status) 
+		values 
+		<foreach collection="list" item="item" separator=",">
+			(#{project_id}, #{item.proj_guid}, #{project_guid}, #{item.house_name}
+			, #{item.house_type}, #{item.house_area}, #{item.house_buildarea}, #{rec_person},now(),#{rec_updateperson},now(),'1')
+		</foreach>
+	</insert>
+	
+	<!-- 批量插入问题 -->
+	<insert id="insertProblemBatch" parameterType="hashmap">
+		insert into d_project_problem
+		(problem_code, proj_guid,batch_id, type, room_id,room_name,position_name,problem_descr,
+		contractor_name,emergency_degree,status,regist_person,regist_time) 
+		values 
+		<foreach collection="list" item="item" separator=",">
+			(#{item.problem_code}, #{proj_guid},#{batch_id}, #{type}, #{item.room_id}
+			, #{item.room_name}, #{item.position_name}, #{item.problem_descr}, 
+			#{item.contractor_name}, #{item.emergency_degree}, #{item.status}, 
+			#{item.regist_person},#{item.regist_time})
+		</foreach>
+	</insert>
+	
+</mapper>

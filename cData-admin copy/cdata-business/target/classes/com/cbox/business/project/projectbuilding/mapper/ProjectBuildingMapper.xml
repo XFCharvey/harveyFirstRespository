@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.project.projectbuilding.mapper.ProjectBuildingMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_id,
+				t.building_name,
+				t.houses_num,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_project_building t
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listProjectBuilding : 获取项目楼栋列表数据 -->
+	<select id="listProjectBuilding" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			 and t.project_id like concat('%',#{project_id},'%')
+		</if>
+		<if test="building_name != null and building_name != ''">
+			 and t.building_name like concat('%',#{building_name},'%')
+		</if>
+		<if test="houses_num != null and houses_num != ''">
+			 and t.houses_num like concat('%',#{houses_num},'%')
+		</if>
+	</select>
+
+	<!-- getProjectBuilding : 获取指定id的项目楼栋数据 -->
+	<select id="getProjectBuilding" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

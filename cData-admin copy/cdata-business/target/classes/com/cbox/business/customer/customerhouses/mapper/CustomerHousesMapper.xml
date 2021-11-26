@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.customer.customerhouses.mapper.CustomerHousesMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.house_id,
+				h.project_id,
+				p.project_name,
+				h.house_name,
+				h.house_status,
+				h.house_type,
+				h.house_area,
+				h.house_buildarea,
+				h.single_price,
+				h.total_price,
+				h.pay_method,
+				h.contract_time,
+				h.contract_delivery_time,
+				h.actual_delivery_time,
+				h.counselor,
+				t.customer_id,
+				c.customer_name,
+        		c.customer_phone,
+				c.rec_time as cRec_time,
+				c.along_follow,
+				c.official_micro_follow,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name,
+				u1.nick_name as counselor_name
+			from d_customer_houses t
+			left join sys_user u on t.rec_person=u.user_name
+			inner join d_customer c on t.customer_id=c.rec_id and c.rec_status='1'
+			left join d_project_houses h on t.house_id=h.rec_id
+      		left join d_project p on h.project_id=p.rec_id
+			left join sys_user u1 on h.counselor=u1.user_name
+		]]>
+	</sql>
+
+	<!-- listCustomerHouses : 获取房间客户关联列表数据 -->
+	<select id="listCustomerHouses" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="house_id != null and house_id != ''">
+			 and t.house_id=#{house_id}
+		</if>
+		<if test="customer_id != null and customer_id != ''">
+			 and t.customer_id=#{customer_id}
+		</if>
+		<if test="customer_phone != null and customer_phone != ''">
+			 and c.customer_phone=#{customer_phone}
+		</if>
+		order by h.contract_time desc
+	</select>
+
+	<!-- getCustomerHouses : 获取指定id的房间客户关联数据 -->
+	<select id="getCustomerHouses" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

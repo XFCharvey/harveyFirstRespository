@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.app.appinfo.mapper.AppInfoMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.id,
+				t.user_name,
+				t.osname,
+				t.osversion,
+				t.token,
+				t.clientid,
+				t.appid,
+				t.appkey,
+				t.version,
+				t.brand,
+				t.model,
+				t.uuid,
+				t.status,
+				t.create_time,
+				t.update_time
+			from d_app_info t
+		]]>
+	</sql>
+
+
+	<!-- getAppInfo : 获取指定id的app登录信息数据 -->
+	<select id="getAppInfo" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.user_name=#{user_name} and t.status='1'
+	</select>
+
+</mapper>

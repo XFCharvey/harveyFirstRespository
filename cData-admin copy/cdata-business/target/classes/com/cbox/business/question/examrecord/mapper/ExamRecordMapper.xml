@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.question.examrecord.mapper.ExamRecordMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.qbank_id,
+				t.exam_person,
+				t.person_phone,
+				(YEAR(NOW())-t.person_birthyear) as age,
+				t.person_sex,
+				t.last_question_groupid,
+				g.group_name as last_group_name,
+				t.reward_id,
+				r.reward_name,
+				r.reward_value,
+				t.reward_status,
+				t.exam_time,
+				t.use_time,
+				t.record_type,
+				t.exam_score,
+				t.is_passed,
+				t.customer_id,
+				q.q_type,
+				q.q_name,
+				u.nick_name as user_name
+			from d_exam_record t
+			left join d_question_bank q on t.qbank_id=q.rec_id
+			left join sys_user u on t.exam_person=u.user_name
+			left join d_question_reward r on t.reward_id=r.rec_id
+			left join d_question_title_group g on t.last_question_groupid=g.rec_id
+		]]>
+	</sql>
+
+	<!-- listExamRecord : 获取考试/问卷记录列表数据 -->
+	<select id="listExamRecord" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO" />
+		where 1=1
+		<if test="rec_id != null and rec_id != ''">
+			and t.rec_id=#{rec_id}
+		</if>
+		<if test="qbank_id != null and qbank_id != ''">
+			and t.qbank_id=#{qbank_id}
+		</if>
+		<if test="exam_person != null and exam_person != ''">
+			and t.exam_person=#{exam_person}
+		</if>
+		<if test="customer_id != null and customer_id != ''">
+			and t.customer_id=#{customer_id}
+		</if>
+		<if test="exam_time != null and exam_time != ''">
+			and t.exam_time like concat(#{exam_time},'%')
+		</if>
+		<if test="person_phone != null and person_phone != ''">
+			and t.person_phone=#{person_phone}
+		</if>
+		<if test="is_passed != null and is_passed != ''">
+			and t.is_passed=#{is_passed}
+		</if>
+		<if test="reward_status != null and reward_status != ''">
+			and t.reward_status=#{reward_status}
+		</if>
+		<if test="exam_range != null and exam_range != ''">
+			and FIND_IN_SET(t.qbank_id,#{exam_range})
+		</if>
+		order by t.exam_time desc
+	</select>
+	
+	<select id="listCommonExamRecord" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO" />
+		<![CDATA[
+			where t.qbank_id <> '171'
+		]]>
+		<if test="person_phone != null and person_phone != ''">
+			and t.person_phone=#{person_phone}
+		</if>
+		order by t.exam_time desc
+	</select>
+
+	<!-- getExamRecord : 获取指定id的考试/问卷记录数据 -->
+	<select id="getExamRecord" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+		where t.rec_id=#{rec_id}
+	</select>
+
+	<!-- getExamRecordByUser : 获取指定填写人手机号和指定题库的记录数据 -->
+	<select id="getExamRecordByUser" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+		where t.person_phone=#{person_phone} and t.qbank_id=#{qbank_id}
+	</select>
+
+</mapper>

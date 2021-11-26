@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.question.questionanalysis.mapper.QuesAnalysisMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.item_type,
+				t.item_key,
+				t.item_name,
+				t.rela_dict_id,
+				t.question_id,
+				q.q_name,
+				t.rela_title_id,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_question_analysis t
+			left join sys_user u on t.rec_person=u.user_name
+			left join d_question_bank q on t.question_id=q.rec_id
+		]]>
+	</sql>
+
+	<!-- listQuestionAnalysis : 获取问卷分析要素列表数据 -->
+	<select id="listQuestionAnalysis" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		<if test="item_type != null and item_type != ''">
+			and t.item_type like concat('%',#{item_type},'%')
+		</if>
+		<if test="item_key != null and item_key != ''">
+			and t.item_key like concat('%',#{item_key},'%')
+		</if>
+		<if test="item_name != null and item_name != ''">
+			and t.item_name like concat('%',#{item_name},'%')
+		</if>
+		<if test="rela_dict_id != null and rela_dict_id != ''">
+			and t.rela_dict_id like concat('%',#{rela_dict_id},'%')
+		</if>
+		<if test="question_id != null and question_id != ''">
+			and t.question_id like concat('%',#{question_id},'%')
+		</if>
+		<if test="rela_title_id != null and rela_title_id != ''">
+			and t.rela_title_id like concat('%',#{rela_title_id},'%')
+		</if>
+	</select>
+
+	<!-- getQuestionAnalysis : 获取指定id的问卷分析要素数据 -->
+	<select id="getQuestionAnalysis" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

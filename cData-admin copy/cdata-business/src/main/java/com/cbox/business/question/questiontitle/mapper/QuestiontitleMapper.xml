@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.question.questiontitle.mapper.QuestiontitleMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.question_id,
+				t.title_name,
+				t.title_type,
+				g.group_name,
+				t.group_id,
+				t.title_sort,
+				t.title_answer,
+				t.title_score,
+				t.analysis_items,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				q.q_name,
+				u.nick_name as user_name
+			from d_question_title t
+			left join d_question_bank q on t.question_id=q.rec_id
+			left join sys_user u on t.rec_person=u.user_name
+			left join d_question_title_group g on t.group_id =g.rec_id
+		]]>
+	</sql>
+
+	<!-- listQuestiontitle : 获取题库题目列表数据 -->
+	<select id="listQuestiontitle" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		<if test="rec_id != null and rec_id != ''">
+			and t.rec_id=#{rec_id}
+		</if>
+		<if test="question_id != null and question_id != ''">
+			and t.question_id=#{question_id}
+		</if>
+		<if test="group_id != null and group_id != ''">
+			and t.group_id=#{group_id}
+		</if>
+		<if test="title_name != null and title_name != ''">
+			and t.title_name like concat('%',#{title_name},'%')
+		</if>
+		<if test="title_type != null and title_type != ''">
+			and t.title_type=#{title_type}
+		</if>
+		<if test="title_sort != null and title_sort != ''">
+			and t.title_sort=#{title_sort}
+		</if>
+		order by t.title_sort asc
+	</select>
+
+	<!-- getQuestiontitle : 获取指定id的题库题目数据 -->
+	<select id="getQuestiontitle" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

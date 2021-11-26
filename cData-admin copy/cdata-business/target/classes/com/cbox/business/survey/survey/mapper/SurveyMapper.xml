@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.survey.survey.mapper.SurveyMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.survey_name,
+				t.survey_date,
+				f.org_name,
+				t.file_id,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_survey t
+			left join sys_user u on t.rec_person=u.user_name
+			left join d_sys_file_record f on t.file_id=f.id
+		]]>
+	</sql>
+
+	<!-- listSurvey : 获取客户调研列表数据 -->
+	<select id="listSurvey" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="survey_name != null and survey_name != ''">
+			 and t.survey_name like concat('%',#{survey_name},'%')
+		</if>
+		<if test="survey_date != null and survey_date != ''">
+			 and t.survey_date like concat('%',#{survey_date},'%')
+		</if>
+		<if test="file_id != null and file_id != ''">
+			 and t.file_id like concat('%',#{file_id},'%')
+		</if>
+	</select>
+
+	<!-- getSurvey : 获取指定id的客户调研数据 -->
+	<select id="getSurvey" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

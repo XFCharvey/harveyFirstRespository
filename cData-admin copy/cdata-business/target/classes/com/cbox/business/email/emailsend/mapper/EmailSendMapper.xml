@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.email.emailsend.mapper.EmailSendMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.email_id,
+				t.email_copy,
+				e.email_url,
+				e.email_owner,
+				e.owner_desc,
+				t.email_title,
+				t.send_person,
+				t.send_time,
+				t.email_content,
+				t.email_img,
+				t.emai_video,
+				t.email_file,
+				t.send_status,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name,
+				u1.nick_name as send_user_name
+			from d_email_send t
+			left join sys_user u on t.rec_person=u.user_name
+			left join sys_user u1 on t.send_person=u1.user_name
+			left join d_email e on t.email_id=e.rec_id
+		]]>
+	</sql>
+
+	<!-- listEmailSend : 获取邮件发送详情表列表数据 -->
+	<select id="listEmailSend" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="email_id != null and email_id != ''">
+			 and t.email_id=#{email_id}
+		</if>
+		<if test="send_person != null and send_person != ''">
+			 and t.send_person=#{send_person}
+		</if>
+		<if test="email_title != null and email_title != ''">
+			 and t.email_title like concat('%',#{email_title},'%')
+		</if>
+		<if test="send_time != null and send_time != ''">
+			 and t.send_time like concat('%',#{send_time},'%')
+		</if>
+		<if test="send_status != null and send_status != ''">
+			 and t.send_status=#{send_status}
+		</if>
+		<if test="send_status != null and send_status != ''">
+			 and t.send_status=#{send_status}
+		</if>
+		<if test="recv_email_url != null and recv_email_url != ''">
+			 and e.email_url=#{recv_email_url}
+		</if>
+		order by send_time desc 
+		
+	</select>
+
+	<!-- getEmailSend : 获取指定id的邮件发送详情表数据 -->
+	<select id="getEmailSend" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+	
+	<!-- 按发送人分组统计 -->
+	<select id="countMailBySend" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select t.send_person,t.nick_name,t.email,count(1) as mail_num from 
+(select s.rec_id,s.email_id,s.send_status,e.email_owner,e.email_url,s.send_person,u.nick_name,u.email from d_email_send s
+left join d_email e on s.email_id=e.rec_id
+left join sys_user u on s.send_person=u.user_name) t
+where t.send_status='1'
+group by t.send_person,t.nick_name,t.email
+	</select>
+	
+	<!-- 按接收人分组统计 -->
+	<select id="countMailByResv" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select t.email_owner,t.email_url,count(1) as mail_num from 
+(select s.rec_id,s.email_id,s.send_status,e.email_owner,e.email_url,s.send_person,u.nick_name,u.email from d_email_send s
+left join d_email e on s.email_id=e.rec_id
+left join sys_user u on s.send_person=u.user_name) t
+where t.send_status='1'
+group by t.email_owner,t.email_url
+	</select>
+
+</mapper>

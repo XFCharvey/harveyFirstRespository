@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.common.mapper.AppMapper">
+	
+	<insert id="saveAppInfo" parameterType="hashmap">
+		INSERT INTO d_app_info
+		(user_name, osname, osversion, token, clientid, appid, appkey, version, 
+			brand, model, uuid, status, create_time, update_time) 
+		VALUES 
+		(#{user_name}, #{osname}, #{osversion}, #{token}, #{clientid}, #{appid}, #{appkey}, #{version}, 
+			#{brand}, #{model}, #{uuid}, '1', now(), now())
+		ON DUPLICATE KEY UPDATE
+			status='1',
+    		osname = #{osname},
+    		osversion = #{osversion},
+    		clientid = #{clientid},
+    		appid = #{appid},
+    		appkey = #{appkey},
+    		version = #{version},
+    		brand = #{brand},
+    		model = #{model},
+    		uuid = #{uuid},
+    		update_time = now()
+	</insert>
+	
+	<insert id="disableAppInfo" parameterType="hashmap">
+		update d_app_info
+		set status='0'
+		where user_name=#{user_name} 
+		and token!=#{token} 
+		and clientid!=#{clientid}
+	</insert>
+
+
+</mapper>

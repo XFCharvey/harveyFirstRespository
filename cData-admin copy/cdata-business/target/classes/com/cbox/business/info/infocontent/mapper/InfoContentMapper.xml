@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.info.infocontent.mapper.InfoContentMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.file_id,
+				fr.org_name as file_org_name,
+				fr.network_path as file_network_path,
+				fr.server_local_path as file_server_local_path,
+				t.info_menuid,
+				s.menu_name,
+				s.rec_lname,
+				t.info_title,
+				t.title_img,
+				t.info_type,
+				t.info_video,
+				t.video_type,
+				f.server_local_path as video_server_local_path,
+				f.network_path,
+				t.info_video_len,
+				t.info_level,
+				t.info_validity_term,
+				t.info_read_time,
+				t.info_status,
+				t.is_course,
+				t.is_accusation,
+				t.question_id,
+				b.rec_id as q_rec_id,
+				b.q_type,
+				b.q_name,
+				e.exam_score,
+				t.course_score,
+				t.publish_unit,
+				dp.dept_name,
+				dp.dept_logo,
+				(case t.publish_person when '' then t.info_source when null then t.info_source else t.publish_person end) as publish_person,
+				t.publish_time,
+				t.filter_result,
+				t.check_person,
+				t.check_time,
+				t.check_reject_reason,
+				t.praise_num,
+				t.comment_num,
+				t.read_num,
+				t.play_num,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u1.nick_name as check_name
+			from d_info t
+			left join sys_user u1 on t.check_person=u1.user_name
+			left join s_info_menu s on t.info_menuid=s.rec_id
+			left join d_question_bank b on t.question_id=b.rec_id
+			left join d_sys_file_record f on t.info_video=f.id
+			left join d_exam_record e on b.rec_id=e.rec_id
+			left join sys_dept dp on t.publish_unit=dp.dept_id
+			left join d_sys_file_record fr on t.file_id=fr.id
+		]]>
+	</sql>
+	
+	<!-- 查询单条所有数据 -->
+	<sql id="selectAllVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.info_menuid,
+				s.menu_name,
+				s.rec_lname,
+				t.info_title,
+				t.title_img,
+				t.info_type,
+				cast(t.info_detail as char) as info_detail,
+				t.info_video,
+				t.video_type,
+				f.server_local_path,
+				f.network_path,
+				t.info_video_len,
+				t.info_level,
+				t.info_validity_term,
+				t.info_read_time,
+				t.info_status,
+				t.is_course,
+				t.is_accusation,
+				t.question_id,
+				b.q_type,
+				b.q_name,
+				t.course_score,
+				t.publish_unit,
+				dp.dept_name,
+				dp.dept_logo,
+				(case t.publish_person when '' then t.info_source when null then t.info_source else t.publish_person end) as publish_person,
+				t.publish_time,
+				t.filter_result,
+				t.check_person,
+				t.check_time,
+				t.check_reject_reason,
+				t.praise_num,
+				t.comment_num,
+				t.read_num,
+				t.play_num,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u1.nick_name as check_name,
+				u.nick_name as user_name
+			from d_info t
+			left join sys_user u on t.rec_person=u.user_name
+			left join sys_user u1 on t.check_person=u1.user_name
+			left join s_info_menu s on t.info_menuid=s.rec_id
+			left join d_question_bank b on t.question_id=b.rec_id
+			left join d_sys_file_record f on t.info_video=f.id
+			left join sys_dept dp on t.publish_unit=dp.dept_id
+		]]>
+	</sql>
+
+	<!-- listInfoContent : 获取资讯信息列表数据 -->
+	<select id="listInfoContent" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1' 
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id=#{rec_id}
+		</if>
+		<if test="info_menuid != null and info_menuid != 0">
+			and (t.info_menuid = #{info_menuid} OR t.info_menuid IN ( SELECT m.rec_id FROM s_info_menu m WHERE m.parent_id=#{info_menuid}))
+		</if>
+		<if test="praise_num != null and praise_num != ''">
+			 and t.praise_num=#{praise_num}
+		</if>
+		<if test="comment_num != null and comment_num != ''">
+			 and t.comment_num=#{comment_num}
+		</if>
+		<if test="read_num != null and read_num != ''">
+			 and t.read_num=#{read_num}
+		</if>
+		<if test="play_num != null and play_num != ''">
+			 and t.play_num=#{play_num}
+		</if>
+		<if test="info_title != null and info_title != ''">
+			 and t.info_title like concat('%',#{info_title},'%')
+		</if>
+		<if test="info_type != null and info_type != ''">
+			 and t.info_type=#{info_type}
+		</if>
+		<if test="info_status != null and info_status != ''">
+			 and t.info_status=#{info_status}
+		</if>
+		<if test="is_course != null and is_course != ''">
+			 and t.is_course=#{is_course}
+		</if>
+		<if test="publish_unit != null and publish_unit != ''">
+			 and t.publish_unit=#{publish_unit}
+		</if>
+		<if test="publish_time != null and publish_time != ''">
+			 and t.publish_time like concat(#{publish_time},'%')
+		</if>
+		<if test="check_person != null and check_person != ''">
+			 and t.check_person=#{check_person}
+		</if>
+		<if test="check_time != null and check_time != ''">
+			 and t.check_time like concat(#{check_time},'%')
+		</if>
+		<if test="check_reject_reason != null and check_reject_reason != ''">
+			 and t.check_reject_reason=#{check_reject_reason}
+		</if>
+		<if test="rec_person != null and rec_person != ''">
+			 and t.rec_person=#{rec_person}
+		</if>
+		<choose>
+	        <when test="query =='check'">
+	            order by t.rec_updatetime desc
+	        </when>
+	        <otherwise>
+	            order by t.info_level asc,t.rec_updatetime desc
+	        </otherwise>
+	    </choose>
+		<if test="limit != null and limit != ''">
+			 limit #{limit}
+		</if>
+		
+	</select>
+	
+	
+	<!-- 发现- 推荐列表 -->
+	<select id="listInfoRecommend" parameterType="java.util.Map" resultType="java.util.HashMap">
+	
+		<![CDATA[
+		select t.rec_id, t.info_menuid, s.menu_name, s.rec_lname, t.info_title, t.title_img, t.info_type, t.info_video, 
+			t.info_video_len, t.info_level, t.info_validity_term, t.info_read_time, t.info_status, t.is_course, t.question_id,
+			f.server_local_path, f.network_path, 
+			t.course_score, t.is_accusation, t.publish_unit, 
+			(case t.publish_person when '' then t.info_source when null then t.info_source else t.publish_person end) as publish_person, 
+			t.publish_time, t.filter_result, t.praise_num, t.comment_num, t.read_num, t.play_num,
+			dp.dept_name, dp.dept_logo,
+			u1.nick_name as check_name
+			from d_info t
+			inner join sys_user u1 on t.check_person=u1.user_name
+			inner join s_info_menu s on t.info_menuid=s.rec_id
+			inner join d_sys_file_record f on t.info_video=f.id
+			inner join sys_dept dp on t.publish_unit=dp.dept_id
+			left join d_info_viewhis v on t.rec_id=v.info_id and v.view_person=#{curr_user_id}
+		where t.rec_status='1' and t.info_video_len<900
+		]]>
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id=#{rec_id}
+		</if>
+		<if test="info_menuid != null and info_menuid != 0">
+			AND (t.info_menuid = #{info_menuid} OR t.info_menuid IN ( SELECT m.rec_id FROM s_info_menu m WHERE m.parent_id=#{info_menuid}))
+		</if>
+		<if test="is_course !=null and is_corse!=''">
+			and t.is_course=#{is_course}
+		</if>
+		<if test="info_type != null and info_type != ''">
+			 and t.info_type=#{info_type}
+		</if>
+		order by v.view_num asc,t.rec_updatetime desc
+		<if test="limit != null and limit != ''">
+			 limit #{limit}
+		</if>
+		
+	</select>
+	
+	<select id="listCoursesfilete" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1' and t.is_course='1' and t.info_status='1' and t.rec_id not in 
+		(select c.course_id from d_compulsory_courses c where c.rec_status = '1' and c.plan_year = #{plan_year})
+	</select>
+	
+	<select id="listCoursesfileteLearn" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1' and t.is_course='1' and t.info_status='1' and t.rec_id not in 
+		(select l.info_id from d_info_learn l where l.learn_person=#{learn_person} and l.learn_year = #{learn_year} 
+			union all
+			select c.course_id as info_id from d_compulsory_courses c where c.rec_status = '1' and c.plan_year = #{learn_year})  
+	</select>
+
+	<!-- getInfoContent : 获取指定id的资讯信息数据 -->
+	<select id="getInfoContent" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectAllVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

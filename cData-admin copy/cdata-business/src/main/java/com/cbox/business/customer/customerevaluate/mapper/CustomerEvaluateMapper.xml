@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.customer.customerevaluate.mapper.CustomerEvaluateMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.customer_id,
+				t.product_quality,
+				t.product_design,
+				t.product_aftersale,
+				t.product_memory,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_customer_evaluate t
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listCustomerEvaluate : 获取客户评价反馈列表数据 -->
+	<select id="listCustomerEvaluate" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="customer_id != null and customer_id != ''">
+			 and t.customer_id like concat('%',#{customer_id},'%')
+		</if>
+		<if test="product_quality != null and product_quality != ''">
+			 and t.product_quality like concat('%',#{product_quality},'%')
+		</if>
+		<if test="product_design != null and product_design != ''">
+			 and t.product_design like concat('%',#{product_design},'%')
+		</if>
+		<if test="product_aftersale != null and product_aftersale != ''">
+			 and t.product_aftersale like concat('%',#{product_aftersale},'%')
+		</if>
+		<if test="product_memory != null and product_memory != ''">
+			 and t.product_memory like concat('%',#{product_memory},'%')
+		</if>
+	</select>
+
+	<!-- getCustomerEvaluate : 获取指定id的客户评价反馈数据 -->
+	<select id="getCustomerEvaluate" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

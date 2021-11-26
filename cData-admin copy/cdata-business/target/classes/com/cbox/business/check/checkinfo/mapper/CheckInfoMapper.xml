@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.check.checkinfo.mapper.CheckInfoMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.dept_id,
+				d.dept_name,
+				t.check_type,
+				t.relation_id,
+				t.check_title,
+				t.publish_time,
+				t.publish_unitid,
+				d1.dept_name as publish_unit_name,
+				t.check_desc,
+				t.check_status,
+				t.check_reject_reason,
+				t.check_time,
+				t.check_person,
+				u1.nick_name as check_person_name,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_check_info t
+			left join sys_user u on t.rec_person=u.user_name
+			left join sys_user u1 on t.check_person=u1.user_name
+			left join sys_dept d on t.dept_id=d.dept_id
+			left join sys_dept d1 on t.publish_unitid=d1.dept_id
+		]]>
+	</sql>
+
+	<!-- listCheckInfo : 获取审核信息表列表数据 -->
+	<select id="listCheckInfo" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="dept_id != null and dept_id != ''">
+			 and t.dept_id =#{dept_id}
+		</if>
+		<if test="check_type != null and check_type != ''">
+			 and t.check_type =#{check_type}
+		</if>
+		<if test="relation_id != null and relation_id != ''">
+			 and t.relation_id=#{relation_id}
+		</if>
+		<if test="check_title != null and check_title != ''">
+			 and t.check_title like concat('%',#{check_title},'%')
+		</if>
+		<if test="check_desc != null and check_desc != ''">
+			 and t.check_desc like concat('%',#{check_desc},'%')
+		</if>
+		<if test="publish_time != null and publish_time != ''">
+			 and t.publish_time like concat(#{publish_time},'%')
+		</if>
+		<if test="check_status != null and check_status != ''">
+			 and t.check_status=#{check_status}
+		</if>
+		<if test="check_reject_reason != null and check_reject_reason != ''">
+			 and t.check_reject_reason=#{check_reject_reason}
+		</if>
+		<if test="publish_unitid != null and publish_unitid != ''">
+			 and t.publish_unitid=#{publish_unitid}
+		</if>
+		order by t.publish_time desc
+	</select>
+
+	<!-- getCheckInfo : 获取指定id的审核信息表数据 -->
+	<select id="getCheckInfo" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+	
+	<!-- 查询指定key的角色的id -->
+	<select id="getRoleID" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		select 
+			r.role_id 
+			from sys_role r
+		where r.status='1'
+		and r.role_key=#{role_key}
+	</select>
+
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.question.questiontitlegroup.mapper.QuestiontitlegroupMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.question_id,
+				q.q_name,
+				t.group_name,
+				t.group_sort,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_question_title_group t
+			left join sys_user u on t.rec_person=u.user_name
+			left join d_question_bank q on t.question_id=q.rec_id
+		]]>
+	</sql>
+
+	<!-- listQuestiontitlegroup : 获取题目分组列表数据 -->
+	<select id="listQuestiontitlegroup"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		<if test="question_id != null and question_id != ''">
+			and t.question_id =#{question_id}
+		</if>
+		<if test="group_name != null and group_name != ''">
+			and t.group_name like concat('%',#{group_name},'%')
+		</if>
+		<if test="group_sort != null and group_sort != ''">
+			and t.group_sort =#{group_sort}
+		</if>
+	</select>
+
+	<!-- getQuestiontitlegroup : 获取指定id的题目分组数据 -->
+	<select id="getQuestiontitlegroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

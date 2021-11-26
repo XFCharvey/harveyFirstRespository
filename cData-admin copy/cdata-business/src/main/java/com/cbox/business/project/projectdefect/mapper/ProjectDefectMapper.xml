@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.project.projectdefect.mapper.ProjectDefectMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_id,
+				t.defect_group,
+				t.defect_type_id,
+				t.defect_image,
+				t.defect_detail,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_project_defect t
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listProjectDefect : 获取项目不利因素列表数据 -->
+	<select id="listProjectDefect" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			 and t.project_id=#{project_id}
+		</if>
+		<if test="defect_group != null and defect_group != ''">
+			 and t.defect_group like concat('%',#{defect_group},'%')
+		</if>
+		<if test="defect_type_id != null and defect_type_id != ''">
+			 and t.defect_type_id=#{defect_type_id}
+		</if>
+	</select>
+
+	<!-- getProjectDefect : 获取指定id的项目不利因素数据 -->
+	<select id="getProjectDefect" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

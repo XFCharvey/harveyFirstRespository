@@ -1,0 +1,189 @@
+10:17:01.812 [main] INFO  c.c.CDataApplication - [logStarting,50] - Starting CDataApplication on DESKTOP-LISTT1T with PID 8964 (C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business\target\classes started by apple in C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business)
+10:17:01.816 [main] INFO  c.c.CDataApplication - [logStartupProfileInfo,652] - The following profiles are active: druid
+10:17:06.311 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-8181"]
+10:17:06.337 [main] INFO  o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+10:17:06.337 [main] INFO  o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/9.0.38]
+10:17:06.557 [main] INFO  o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+10:17:14.648 [main] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+10:17:15.253 [main] INFO  i.l.c.EpollProvider - [<clinit>,68] - Starting without optional epoll library
+10:17:15.255 [main] INFO  i.l.c.KqueueProvider - [<clinit>,70] - Starting without optional kqueue library
+10:17:25.332 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1220] - Using default implementation for ThreadExecutor
+10:17:25.351 [main] INFO  o.q.c.SchedulerSignalerImpl - [<init>,61] - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+10:17:25.351 [main] INFO  o.q.c.QuartzScheduler - [<init>,229] - Quartz Scheduler v.2.3.2 created.
+10:17:25.360 [main] INFO  o.q.c.QuartzScheduler - [initialize,294] - Scheduler meta-data: Quartz Scheduler (v2.3.2) 'CboxScheduler' with instanceId 'DESKTOP-LISTT1T1637720245335'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 20 threads.
+  Using job-store 'org.springframework.scheduling.quartz.LocalDataSourceJobStore' - which supports persistence. and is clustered.
+
+10:17:25.360 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1374] - Quartz scheduler 'CboxScheduler' initialized from an externally provided properties instance.
+10:17:25.361 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1378] - Quartz scheduler version: 2.3.2
+10:17:25.364 [main] INFO  o.q.c.QuartzScheduler - [setJobFactory,2293] - JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@6ed87ccf
+10:17:39.657 [main] INFO  s.d.s.w.PropertySourcedRequestMappingHandlerMapping - [initHandlerMethods,69] - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+10:17:41.353 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,160] - Context refreshed
+10:17:41.373 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,163] - Found 1 custom documentation plugin(s)
+10:17:41.447 [main] INFO  s.d.s.w.s.ApiListingReferenceScanner - [scan,41] - Scanning for api listing references
+10:17:41.634 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Starting ProtocolHandler ["http-nio-8181"]
+10:17:41.665 [main] INFO  c.c.CDataApplication - [logStarted,59] - Started CDataApplication in 40.457 seconds (JVM running for 41.148)
+10:17:43.719 [Quartz Scheduler [CboxScheduler]] INFO  o.q.c.QuartzScheduler - [start,547] - Scheduler CboxScheduler_$_DESKTOP-LISTT1T1637720245335 started.
+11:22:32.504 [main] INFO  c.c.CDataApplication - [logStarting,50] - Starting CDataApplication on DESKTOP-LISTT1T with PID 10248 (C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business\target\classes started by apple in C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business)
+11:22:32.508 [main] INFO  c.c.CDataApplication - [logStartupProfileInfo,652] - The following profiles are active: druid
+11:22:37.104 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-8181"]
+11:22:37.122 [main] INFO  o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+11:22:37.123 [main] INFO  o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/9.0.38]
+11:22:37.290 [main] INFO  o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+11:22:37.370 [main] INFO  o.a.c.c.StandardService - [log,173] - Stopping service [Tomcat]
+11:23:57.464 [main] INFO  c.c.CDataApplication - [logStarting,50] - Starting CDataApplication on DESKTOP-LISTT1T with PID 3396 (C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business\target\classes started by apple in C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business)
+11:23:57.467 [main] INFO  c.c.CDataApplication - [logStartupProfileInfo,652] - The following profiles are active: druid
+11:24:01.532 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-8181"]
+11:24:01.558 [main] INFO  o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+11:24:01.559 [main] INFO  o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/9.0.38]
+11:24:01.730 [main] INFO  o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+11:24:01.801 [main] INFO  o.a.c.c.StandardService - [log,173] - Stopping service [Tomcat]
+11:25:21.666 [main] INFO  c.c.CDataApplication - [logStarting,50] - Starting CDataApplication on DESKTOP-LISTT1T with PID 10680 (C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business\target\classes started by apple in C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business)
+11:25:21.669 [main] INFO  c.c.CDataApplication - [logStartupProfileInfo,652] - The following profiles are active: druid
+11:25:25.708 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-8181"]
+11:25:25.723 [main] INFO  o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+11:25:25.723 [main] INFO  o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/9.0.38]
+11:25:25.895 [main] INFO  o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+11:25:25.963 [main] INFO  o.a.c.c.StandardService - [log,173] - Stopping service [Tomcat]
+11:28:32.816 [main] INFO  c.c.CDataApplication - [logStarting,50] - Starting CDataApplication on DESKTOP-LISTT1T with PID 10212 (C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business\target\classes started by apple in C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business)
+11:28:32.820 [main] INFO  c.c.CDataApplication - [logStartupProfileInfo,652] - The following profiles are active: druid
+11:28:36.832 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-8181"]
+11:28:36.850 [main] INFO  o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+11:28:36.850 [main] INFO  o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/9.0.38]
+11:28:37.023 [main] INFO  o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+11:28:44.185 [main] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+11:28:44.667 [main] INFO  i.l.c.EpollProvider - [<clinit>,68] - Starting without optional epoll library
+11:28:44.669 [main] INFO  i.l.c.KqueueProvider - [<clinit>,70] - Starting without optional kqueue library
+11:28:52.400 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1220] - Using default implementation for ThreadExecutor
+11:28:52.419 [main] INFO  o.q.c.SchedulerSignalerImpl - [<init>,61] - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+11:28:52.419 [main] INFO  o.q.c.QuartzScheduler - [<init>,229] - Quartz Scheduler v.2.3.2 created.
+11:28:52.427 [main] INFO  o.q.c.QuartzScheduler - [initialize,294] - Scheduler meta-data: Quartz Scheduler (v2.3.2) 'CboxScheduler' with instanceId 'DESKTOP-LISTT1T1637724532403'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 20 threads.
+  Using job-store 'org.springframework.scheduling.quartz.LocalDataSourceJobStore' - which supports persistence. and is clustered.
+
+11:28:52.427 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1374] - Quartz scheduler 'CboxScheduler' initialized from an externally provided properties instance.
+11:28:52.427 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1378] - Quartz scheduler version: 2.3.2
+11:28:52.429 [main] INFO  o.q.c.QuartzScheduler - [setJobFactory,2293] - JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@2db6ba81
+11:29:03.996 [main] INFO  s.d.s.w.PropertySourcedRequestMappingHandlerMapping - [initHandlerMethods,69] - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+11:29:05.632 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,160] - Context refreshed
+11:29:05.652 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,163] - Found 1 custom documentation plugin(s)
+11:29:05.724 [main] INFO  s.d.s.w.s.ApiListingReferenceScanner - [scan,41] - Scanning for api listing references
+11:29:05.915 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Starting ProtocolHandler ["http-nio-8181"]
+11:29:05.938 [main] INFO  c.c.CDataApplication - [logStarted,59] - Started CDataApplication in 33.728 seconds (JVM running for 34.4)
+11:29:07.189 [Quartz Scheduler [CboxScheduler]] INFO  o.q.c.QuartzScheduler - [start,547] - Scheduler CboxScheduler_$_DESKTOP-LISTT1T1637724532403 started.
+11:30:43.325 [main] INFO  c.c.CDataApplication - [logStarting,50] - Starting CDataApplication on DESKTOP-LISTT1T with PID 2544 (C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business\target\classes started by apple in C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business)
+11:30:43.328 [main] INFO  c.c.CDataApplication - [logStartupProfileInfo,652] - The following profiles are active: druid
+11:30:47.148 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-8181"]
+11:30:47.171 [main] INFO  o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+11:30:47.172 [main] INFO  o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/9.0.38]
+11:30:47.329 [main] INFO  o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+11:30:53.874 [main] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+11:30:54.361 [main] INFO  i.l.c.EpollProvider - [<clinit>,68] - Starting without optional epoll library
+11:30:54.364 [main] INFO  i.l.c.KqueueProvider - [<clinit>,70] - Starting without optional kqueue library
+11:31:02.160 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1220] - Using default implementation for ThreadExecutor
+11:31:02.179 [main] INFO  o.q.c.SchedulerSignalerImpl - [<init>,61] - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+11:31:02.179 [main] INFO  o.q.c.QuartzScheduler - [<init>,229] - Quartz Scheduler v.2.3.2 created.
+11:31:02.187 [main] INFO  o.q.c.QuartzScheduler - [initialize,294] - Scheduler meta-data: Quartz Scheduler (v2.3.2) 'CboxScheduler' with instanceId 'DESKTOP-LISTT1T1637724662163'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 20 threads.
+  Using job-store 'org.springframework.scheduling.quartz.LocalDataSourceJobStore' - which supports persistence. and is clustered.
+
+11:31:02.188 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1374] - Quartz scheduler 'CboxScheduler' initialized from an externally provided properties instance.
+11:31:02.188 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1378] - Quartz scheduler version: 2.3.2
+11:31:02.190 [main] INFO  o.q.c.QuartzScheduler - [setJobFactory,2293] - JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@1bb0fa38
+11:31:13.462 [main] INFO  s.d.s.w.PropertySourcedRequestMappingHandlerMapping - [initHandlerMethods,69] - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+11:31:14.963 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,160] - Context refreshed
+11:31:14.987 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,163] - Found 1 custom documentation plugin(s)
+11:31:15.062 [main] INFO  s.d.s.w.s.ApiListingReferenceScanner - [scan,41] - Scanning for api listing references
+11:31:15.252 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Starting ProtocolHandler ["http-nio-8181"]
+11:31:15.264 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Pausing ProtocolHandler ["http-nio-8181"]
+11:31:15.264 [main] INFO  o.a.c.c.StandardService - [log,173] - Stopping service [Tomcat]
+11:31:15.270 [main] INFO  o.a.c.u.LifecycleBase - [log,173] - The stop() method was called on component [StandardServer[-1]] after stop() had already been called. The second call will be ignored.
+11:31:15.271 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Stopping ProtocolHandler ["http-nio-8181"]
+11:31:15.271 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Destroying ProtocolHandler ["http-nio-8181"]
+11:31:15.291 [main] INFO  o.q.c.QuartzScheduler - [shutdown,666] - Scheduler CboxScheduler_$_DESKTOP-LISTT1T1637724662163 shutting down.
+11:31:15.291 [main] INFO  o.q.c.QuartzScheduler - [standby,585] - Scheduler CboxScheduler_$_DESKTOP-LISTT1T1637724662163 paused.
+11:31:15.291 [main] INFO  o.q.c.QuartzScheduler - [shutdown,740] - Scheduler CboxScheduler_$_DESKTOP-LISTT1T1637724662163 shutdown complete.
+11:31:15.292 [main] INFO  sys-user - [shutdownAsyncManager,31] - ====关闭后台任务任务线程池====
+11:31:15.305 [main] INFO  c.a.d.p.DruidDataSource - [close,2032] - {dataSource-1} closing ...
+11:31:15.310 [main] INFO  c.a.d.p.DruidDataSource - [close,2104] - {dataSource-1} closed
+11:33:32.286 [main] INFO  c.c.CDataApplication - [logStarting,50] - Starting CDataApplication on DESKTOP-LISTT1T with PID 10740 (C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business\target\classes started by apple in C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business)
+11:33:32.289 [main] INFO  c.c.CDataApplication - [logStartupProfileInfo,652] - The following profiles are active: druid
+11:33:36.140 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-8181"]
+11:33:36.167 [main] INFO  o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+11:33:36.167 [main] INFO  o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/9.0.38]
+11:33:36.334 [main] INFO  o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+11:33:45.266 [main] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+11:33:45.770 [main] INFO  i.l.c.EpollProvider - [<clinit>,68] - Starting without optional epoll library
+11:33:45.772 [main] INFO  i.l.c.KqueueProvider - [<clinit>,70] - Starting without optional kqueue library
+11:33:53.108 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1220] - Using default implementation for ThreadExecutor
+11:33:53.133 [main] INFO  o.q.c.SchedulerSignalerImpl - [<init>,61] - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+11:33:53.133 [main] INFO  o.q.c.QuartzScheduler - [<init>,229] - Quartz Scheduler v.2.3.2 created.
+11:33:53.142 [main] INFO  o.q.c.QuartzScheduler - [initialize,294] - Scheduler meta-data: Quartz Scheduler (v2.3.2) 'CboxScheduler' with instanceId 'DESKTOP-LISTT1T1637724833111'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 20 threads.
+  Using job-store 'org.springframework.scheduling.quartz.LocalDataSourceJobStore' - which supports persistence. and is clustered.
+
+11:33:53.142 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1374] - Quartz scheduler 'CboxScheduler' initialized from an externally provided properties instance.
+11:33:53.142 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1378] - Quartz scheduler version: 2.3.2
+11:33:53.144 [main] INFO  o.q.c.QuartzScheduler - [setJobFactory,2293] - JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@6ed87ccf
+11:34:04.110 [main] INFO  s.d.s.w.PropertySourcedRequestMappingHandlerMapping - [initHandlerMethods,69] - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+11:34:05.723 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,160] - Context refreshed
+11:34:05.744 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,163] - Found 1 custom documentation plugin(s)
+11:34:05.816 [main] INFO  s.d.s.w.s.ApiListingReferenceScanner - [scan,41] - Scanning for api listing references
+11:34:05.998 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Starting ProtocolHandler ["http-nio-8181"]
+11:34:06.021 [main] INFO  c.c.CDataApplication - [logStarted,59] - Started CDataApplication in 34.311 seconds (JVM running for 35.03)
+11:34:07.247 [Quartz Scheduler [CboxScheduler]] INFO  o.q.c.QuartzScheduler - [start,547] - Scheduler CboxScheduler_$_DESKTOP-LISTT1T1637724833111 started.
+16:12:14.218 [main] INFO  c.c.CDataApplication - [logStarting,50] - Starting CDataApplication on DESKTOP-LISTT1T with PID 5808 (C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business\target\classes started by apple in C:\Users\apple\Desktop\rc\00-code\trunk\cData-admin\cdata-business)
+16:12:14.221 [main] INFO  c.c.CDataApplication - [logStartupProfileInfo,652] - The following profiles are active: druid
+16:12:18.655 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-8181"]
+16:12:18.676 [main] INFO  o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+16:12:18.677 [main] INFO  o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/9.0.38]
+16:12:18.859 [main] INFO  o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+16:12:25.016 [main] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+16:12:25.472 [main] INFO  i.l.c.EpollProvider - [<clinit>,68] - Starting without optional epoll library
+16:12:25.474 [main] INFO  i.l.c.KqueueProvider - [<clinit>,70] - Starting without optional kqueue library
+16:12:30.907 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1220] - Using default implementation for ThreadExecutor
+16:12:30.932 [main] INFO  o.q.c.SchedulerSignalerImpl - [<init>,61] - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+16:12:30.932 [main] INFO  o.q.c.QuartzScheduler - [<init>,229] - Quartz Scheduler v.2.3.2 created.
+16:12:30.939 [main] INFO  o.q.c.QuartzScheduler - [initialize,294] - Scheduler meta-data: Quartz Scheduler (v2.3.2) 'CboxScheduler' with instanceId 'DESKTOP-LISTT1T1637741550911'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 20 threads.
+  Using job-store 'org.springframework.scheduling.quartz.LocalDataSourceJobStore' - which supports persistence. and is clustered.
+
+16:12:30.939 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1374] - Quartz scheduler 'CboxScheduler' initialized from an externally provided properties instance.
+16:12:30.940 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1378] - Quartz scheduler version: 2.3.2
+16:12:30.942 [main] INFO  o.q.c.QuartzScheduler - [setJobFactory,2293] - JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@113a6636
+16:12:38.831 [main] INFO  s.d.s.w.PropertySourcedRequestMappingHandlerMapping - [initHandlerMethods,69] - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+16:12:40.527 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,160] - Context refreshed
+16:12:40.548 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,163] - Found 1 custom documentation plugin(s)
+16:12:40.627 [main] INFO  s.d.s.w.s.ApiListingReferenceScanner - [scan,41] - Scanning for api listing references
+16:12:40.800 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Starting ProtocolHandler ["http-nio-8181"]
+16:12:40.810 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Pausing ProtocolHandler ["http-nio-8181"]
+16:12:40.810 [main] INFO  o.a.c.c.StandardService - [log,173] - Stopping service [Tomcat]
+16:12:40.816 [main] INFO  o.a.c.u.LifecycleBase - [log,173] - The stop() method was called on component [StandardServer[-1]] after stop() had already been called. The second call will be ignored.
+16:12:40.816 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Stopping ProtocolHandler ["http-nio-8181"]
+16:12:40.816 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Destroying ProtocolHandler ["http-nio-8181"]
+16:12:40.835 [main] INFO  o.q.c.QuartzScheduler - [shutdown,666] - Scheduler CboxScheduler_$_DESKTOP-LISTT1T1637741550911 shutting down.
+16:12:40.835 [main] INFO  o.q.c.QuartzScheduler - [standby,585] - Scheduler CboxScheduler_$_DESKTOP-LISTT1T1637741550911 paused.
+16:12:40.835 [main] INFO  o.q.c.QuartzScheduler - [shutdown,740] - Scheduler CboxScheduler_$_DESKTOP-LISTT1T1637741550911 shutdown complete.
+16:12:40.836 [main] INFO  sys-user - [shutdownAsyncManager,31] - ====关闭后台任务任务线程池====
+16:12:40.851 [main] INFO  c.a.d.p.DruidDataSource - [close,2032] - {dataSource-1} closing ...
+16:12:40.857 [main] INFO  c.a.d.p.DruidDataSource - [close,2104] - {dataSource-1} closed

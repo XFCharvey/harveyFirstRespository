@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.customer.customernotice.mapper.CustomerNoticeMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.notice_title,
+				t.notice_content,
+				t.notice_person,
+				c.customer_name,
+				t.finish_deadline,
+                DATEDIFF(t.finish_deadline,now()) as date_disparity,
+				t.notice_time,
+				t.notice_status,
+				t.notice_handler,
+				u.nick_name as handler_user_name,
+				u.avatar as user_avatar
+			from d_customer_notice t
+			left join sys_user u on t.notice_handler=u.user_name
+			left join d_customer c on t.notice_person=c.rec_id
+		]]>
+	</sql>
+	
+	<!-- listCustomerNotice : 获取消息通知列表数据 -->
+	<select id="listCustomerNotice" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		where 1=1
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id=#{rec_id}
+		</if>
+		<if test="notice_time != null and notice_time != ''">
+			 and t.notice_time=#{notice_time}
+		</if>
+		<if test="notice_person != null and notice_person != ''">
+			 and t.notice_person=#{notice_person}
+		</if>
+		<if test="notice_status != null and notice_status != ''">
+			 and t.notice_status=#{notice_status}
+		</if>
+		<if test="finish_deadline  != null and finish_deadline  != ''">
+			 and t.finish_deadline =#{finish_deadline }
+		</if>
+		<if test="notice_handler   != null and notice_handler   != ''">
+			 and t.notice_handler  =#{notice_handler  }
+		</if>
+		order by t.notice_time desc
+	</select>
+	
+
+	<!-- getCustomerNotice : 获取指定id的消息通知数据 -->
+	<select id="getCustomerNotice" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		where t.rec_id=#{rec_id}
+	</select>
+
+	<select id="listOverdueCustomerNotice" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		<![CDATA[
+			where DATEDIFF(t.finish_deadline,now())>=0 and t.notice_person=#{notice_person} 
+			order by t.notice_time desc
+		]]>
+	</select>
+	
+	<delete id="delNotice" parameterType="java.util.Map">
+		delete from d_customer_notice where notice_title like #{notice_title} and notice_person=#{notice_person} and relation_id = #{relation_id}
+	</delete>
+
+	<update id="allDoneNotice">
+		updete d_customer_notice set notice_status='done' where notice_person=#{notice_person}
+	</update>
+
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.project.projectinfomenu.mapper.ProjectInfoMenuMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.parent_id,
+				t.ancestors,
+				t.menu_name,
+				t.menu_detail,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_project_info_menu t
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listProjectInfoMenu : 获取项目资料分类列表数据 -->
+	<select id="listProjectInfoMenu" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="parent_id != null and parent_id != ''">
+			 and t.parent_id=#{parent_id}
+		</if>
+		<if test="ancestors != null and ancestors != ''">
+			 and t.ancestors like concat('%',#{ancestors},'%')
+		</if>
+		<if test="menu_name != null and menu_name != ''">
+			 and t.menu_name like concat('%',#{menu_name},'%')
+		</if>
+	</select>
+
+	<!-- getProjectInfoMenu : 获取指定id的项目资料分类数据 -->
+	<select id="getProjectInfoMenu" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+	
+	<!-- updateInfoMenu : 更新资料分类目录所属父目录及对应子目录的祖级列表 -->
+	<update id="updateInfoMenu">
+		update s_info_menu set ancestors=REPLACE (ancestors,#{ance},#{newanc}) where ancestors like concat(#{ance1},'%')
+	</update>
+
+</mapper>

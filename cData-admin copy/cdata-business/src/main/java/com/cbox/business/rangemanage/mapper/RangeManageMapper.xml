@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.rangemanage.mapper.RangeManageMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select
+				t.rec_id,
+				t.p_username,
+				t.position_value,
+				t.position_label,
+				t.position_desc,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name,
+				s.nick_name as p_usersname
+			from d_position_admin t
+			left join sys_user u on t.rec_person=u.user_name
+			left join sys_user s on t.p_username=s.user_name
+		]]>
+	</sql>
+
+	<!-- listRangeManage : 获取片区管理列表数据 -->
+	<select id="listRangeManage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="p_username != null and p_username != ''">
+			 and t.p_username = #{p_username}
+		</if>
+		<if test="position_value != null and position_value != ''">
+			 and t.position_value like concat('%',#{position_value},'%')
+		</if>
+		<if test="position_label != null and position_label != ''">
+			 and t.position_label like concat('%',#{position_label},'%')
+		</if>
+	</select>
+
+	<!-- getRangeManage : 获取指定id的片区管理数据 -->
+	<select id="getRangeManage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.question.questionbank.mapper.QuestionBankMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.q_type,
+				t.q_name,
+				t.q_detail,
+				t.q_launch_unit,
+				d1.dept_name as launch_dept_name,
+				t.exam_title_num,
+				t.exam_maxtime,
+				t.full_score,
+				t.qualified_score,
+				t.q_img,
+				t.q_range_dept,
+				d.dept_name as range_dept_name,
+				t.invitation_num,
+				t.begin_time,
+				t.end_time,
+				t.end_text,
+				t.is_reward,
+				t.q_status,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_question_bank t
+			left join sys_dept d on t.q_range_dept = d.dept_id
+			left join sys_dept d1 on t.q_launch_unit = d1.dept_id
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listQuestionBank : 获取题库主题列表数据 -->
+	<select id="listQuestionBank" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id=#{rec_id}
+		</if>
+		<if test="q_type != null and q_type != ''">
+			 and t.q_type=#{q_type}
+		</if>
+		<if test="q_name != null and q_name != ''">
+			 and t.q_name like concat('%',#{q_name},'%')
+		</if>
+		<if test="q_detail != null and q_detail != ''">
+			 and t.q_detail=#{q_detail}
+		</if>
+		<if test="q_launch_unit != null and q_launch_unit != ''">
+			 and t.q_launch_unit=#{q_launch_unit}
+		</if>
+		<if test="exam_title_num != null and exam_title_num != ''">
+			 and t.exam_title_num=#{exam_title_num}
+		</if>
+		<if test="qualified_score != null and qualified_score != ''">
+			 and t.qualified_score=#{qualified_score}
+		</if>
+		<if test="begin_time != null and begin_time != ''">
+			 and t.begin_time like concat(#{begin_time},'%')
+		</if>
+		<if test="end_time != null and end_time != ''">
+			 and t.end_time like concat(#{end_time},'%')
+		</if>
+		<if test="q_status != null and q_status != ''">
+			 and t.q_status=#{q_status}
+		</if>
+		<if test="rec_person != null and rec_person != ''">
+			 and t.rec_person=#{rec_person}
+		</if>
+		<if test="rec_time != null and rec_time != ''">
+			 and t.rec_time=#{rec_time}
+		</if>
+		order by t.rec_time desc
+	</select>
+
+	<select id="filterQuestionBank" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		where t.rec_status='1'
+		<if test="q_type != null and q_type != ''">
+			 and t.q_type=#{q_type}
+		</if>
+	</select>
+	
+	<select id="getQuestionCount" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select t.qbank_id as question_id,count(1) as q_count from d_exam_record t
+ 		group by t.qbank_id
+	</select>
+	
+	
+	<!-- 过滤掉已关联资讯的题库 -->
+	<select id="listFilterInfoQuestionBank" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		where t.rec_status='1' and t.q_launch_unit=#{q_launch_unit} and t.q_type='exam' and t.rec_id not in 
+		(select i.question_id from d_info i where i.rec_status='1' and i.is_course='1' )
+	</select>
+	
+	<!-- getQuestionBank : 获取指定id的题库主题数据 -->
+	<select id="getQuestionBank" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+	
+	<select id="countinvitationNum" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select count(*) as invitationNum from sys_user where status=0 and del_flag=0 and (dept_id = #{q_range_dept} OR dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{q_range_dept}, ancestors)))
+	</select>
+
+</mapper>

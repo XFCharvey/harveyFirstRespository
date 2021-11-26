@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.user.userremind.mapper.UserRemindMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.remind_title,
+				t.remind_time,
+				DATEDIFF(t.remind_time,now()) as date_disparity,
+				t.remind_desc,
+				t.remind_person,
+				t.remind_status,
+				u.nick_name as remind_user_name,
+                t.rec_status,
+                t.rec_person,
+                t.rec_time,
+                t.rec_updateperson,
+                t.rec_updatetime,
+                u1.nick_name as user_name
+			from d_user_remind t
+			left join sys_user u on t.remind_person=u.user_name
+			left join sys_user u1 on t.rec_person=u1.user_name
+		]]>
+	</sql>
+
+	<!-- listUserRemind : 获取员工个人提醒列表数据 -->
+	<select id="listUserRemind" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where rec_status='1'
+		<if test="remind_title != null and remind_title != ''">
+			 and t.remind_title like concat('%',#{remind_title},'%')
+		</if>
+		<if test="remind_time != null and remind_time != ''">
+			 and t.remind_time like concat(#{remind_time},'%')
+		</if>
+		<if test="remind_desc != null and remind_desc != ''">
+			 and t.remind_desc like concat('%',#{remind_desc},'%')
+		</if>
+		<if test="remind_person != null and remind_person != ''">
+			 and t.remind_person=#{remind_person}
+		</if>
+		<if test="remind_status != null and remind_status != ''">
+			 and t.remind_status=#{remind_status}
+		</if>
+	</select>
+
+	<!-- getUserRemind : 获取指定id的员工个人提醒数据 -->
+	<select id="getUserRemind" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

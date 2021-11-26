@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.customer.customerrelation.mapper.CustomerRelationMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.customer_id,
+				c1.customer_name,
+				t.relation_customerId,
+				c2.customer_name as relation_customer_name,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_customer_relation t
+			left join sys_user u on t.rec_person=u.user_name
+			left join d_customer c1 on c1.rec_id=t.customer_id
+			left join d_customer c2 on c2.rec_id=t.relation_customerId
+		]]>
+	</sql>
+
+	<!-- 查询对象 -->
+	<sql id="selectVO2">
+		<![CDATA[
+			SELECT
+				c.customer_name,
+				ph.house_name 
+			FROM
+				d_customer_relation t
+				LEFT JOIN d_customer c ON c.rec_id = t.relation_customerId
+				LEFT JOIN d_customer_houses ch ON ch.customer_id = t.relation_customerId
+				LEFT JOIN d_project_houses ph ON ph.rec_id = ch.house_id
+		]]>
+	</sql>
+
+
+	<!-- listCustomerRelation : 获取客户关联人列表数据 -->
+	<select id="listCustomerRelation" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		<if test="customer_id != null and customer_id != ''">
+			and t.customer_id =#{customer_id}
+		</if>
+		<if
+			test="relation_customerId != null and relation_customerId != ''">
+			and t.relation_customerId =#{relation_customerId}
+		</if>
+	</select>
+
+	<!-- listRelationCusHouses : 查询指定客户的关联人的房间号列表 -->
+	<select id="listRelationCusHouses" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO2" />
+
+		where t.rec_status='1'
+		<if test="customer_id != null and customer_id != ''">
+			and t.customer_id =#{customer_id}
+		</if>
+	</select>
+
+	<!-- getCustomerRelation : 获取指定id的客户关联人数据 -->
+	<select id="getCustomerRelation" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

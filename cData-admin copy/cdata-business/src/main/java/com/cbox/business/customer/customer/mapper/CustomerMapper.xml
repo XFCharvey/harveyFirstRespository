@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.customer.customer.mapper.CustomerMapper">
+
+	<!-- 查询对象 -->
+	<!-- 去重 -->
+	<sql id="selectVO">
+		<![CDATA[
+			SELECT DISTINCT
+				t.rec_id,
+				p.rec_id AS project_id,
+				p.project_name,
+				s.serve_person,
+				s.serve_count,
+				s.serve_time,
+				t.customer_name,
+				t.customer_type,
+				t.customer_status,
+				t.customer_level,
+				t.customer_phone,
+				t.customer_birthdate,
+				YEAR (NOW()) - YEAR ( t.customer_birthdate ) AS customer_age,
+				t.customer_lable,
+				t.customer_sex,
+				t.customer_id,
+				t.customer_addr,
+				t.official_micro_follow,
+				t.along_follow,
+				t.customer_photo,
+				t.customer_vocation,
+				t.customer_industry,
+				t.customer_hobby,
+				t.customer_income,
+				t.customer_company,
+				t.customer_circle,
+				t.focus,
+				t.recommender,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name AS user_name 
+			FROM
+				( SELECT * FROM d_customer t ORDER BY t.rec_updatetime DESC ) t
+				LEFT JOIN sys_user u ON t.rec_person = u.user_name
+				LEFT JOIN d_user_servehis s ON t.rec_id = s.served_customer 
+				AND s.serve_person = 'admin'
+				LEFT JOIN d_customer_houses ch ON t.rec_id = ch.customer_id 
+				AND ch.rec_status = '1'
+				LEFT JOIN d_project_houses h ON ch.house_id = h.rec_id 
+				AND h.rec_status = '1'
+				LEFT JOIN d_project p ON h.project_id = p.rec_id 
+		]]>
+	</sql>
+
+	<!-- 查询对象 -->
+	<!-- 不去重 -->
+	<sql id="selectVO2">
+		<![CDATA[
+			SELECT
+				t.rec_id,
+				t.customer_name,
+				t.customer_phone,
+				t.customer_addr,
+				t.customer_id,
+				h.house_name
+			FROM
+				d_customer t
+				INNER JOIN d_customer_houses ch ON t.rec_id = ch.customer_id 
+				INNER JOIN d_project_houses h ON ch.house_id = h.rec_id 
+				INNER JOIN d_project p ON h.project_id = p.rec_id
+		]]>
+	</sql>
+
+	<!-- 查询对象 -->
+	<sql id="selectAppVO">
+		<![CDATA[
+			select 
+                t.rec_id,
+                t.customer_name,
+                t.customer_type,
+                t.customer_status,
+                t.customer_level,
+                t.customer_phone,
+                t.customer_birthdate,
+                YEAR(NOW()) - YEAR(t.customer_birthdate) as customer_age,
+                t.customer_lable,
+                t.customer_sex,
+                t.customer_id,
+                t.customer_addr,
+                t.official_micro_follow,
+                t.along_follow,
+                t.customer_photo,
+                t.customer_vocation,
+                t.customer_industry,
+                t.customer_hobby,
+                t.customer_income,
+                t.customer_company,
+                t.customer_circle,
+                t.focus,
+                t.recommender,
+                t.rec_status,
+                t.rec_person,
+                t.rec_time,
+                t.rec_updateperson,
+                t.rec_updatetime,
+                u.nick_name as user_name
+            from d_customer t
+            left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!--h.counselor, h.contract_time, h.contract_delivery_time, h.actual_delivery_time, -->
+
+	<!-- listCustomer : 获取客户信息列表数据 -->
+	<select id="listCustomer" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		<if test="customer_name != null and customer_name != ''">
+			and t.customer_name like concat('%',#{customer_name},'%')
+		</if>
+		<if test="customer_id != null and customer_id != ''">
+			and t.customer_id=#{customer_id}
+		</if>
+		<if test="customer_type != null and customer_type != ''">
+			and t.customer_type=#{customer_type}
+		</if>
+		<!--级别小于四时 -->
+		<if
+			test="customer_level != null and customer_level != '' and customer_level lt 4">
+			and t.customer_level=#{customer_level}
+		</if>
+		<!--级别大于等于四时 -->
+		<if
+			test="customer_level != null and customer_level != '' and customer_level gt 3">
+			<![CDATA[and t.customer_level>3]]>
+		</if>
+		<if test="project_name != null and project_name != ''">
+			and p.project_name like concat('%',#{project_name},'%')
+		</if>
+		<if test="project_id != null and project_id != ''">
+			and p.rec_id=#{project_id}
+		</if>
+		<if test="customer_status != null and customer_status != ''">
+			and t.customer_status=#{customer_status}
+		</if>
+		<if test="customer_lable != null and customer_lable != ''">
+			and FIND_IN_SET(#{customer_lable},t.customer_lable)
+		</if>
+		<if test="customer_addr != null and customer_addr != ''">
+			and t.customer_addr=#{customer_addr}
+		</if>
+		<if test="customer_phone != null and customer_phone != ''">
+			and t.customer_phone like concat('%',#{customer_phone})
+		</if>
+		<if
+			test="official_micro_follow != null and official_micro_follow != ''">
+			and t.official_micro_follow=#{official_micro_follow}
+		</if>
+		<if test="along_follow != null and along_follow != ''">
+			and t.along_follow=#{along_follow}
+		</if>
+		<if test="project_id != null and project_id != ''">
+			and p.rec_id=#{project_id}
+		</if>
+		<if test="recommender != null and recommender != ''">
+			and t.recommender=#{recommender}
+		</if>
+		<!-- order by s.serve_time desc,s.serve_count desc,t.rec_updatetime desc -->
+	</select>
+
+	<!-- "listCustomerOfHouse" : 获取导出客户信息列表数据 -->
+	<select id="listCustomerOfHouse" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO2" />
+
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and p.rec_id =#{project_id}
+		</if>
+		<if test="house_name != null and house_name != ''">
+			and h.house_name like concat('%',#{house_name},'%')
+		</if>
+	</select>
+
+	<!-- listCustomerApp : app获取客户信息列表数据 -->
+	<select id="listCustomerApp" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectAppVO" />
+
+		where t.rec_status='1'
+		<if test="customer_name != null and customer_name != ''">
+			and t.customer_name like concat('%',#{customer_name},'%')
+		</if>
+
+		<if test="customer_type != null and customer_type != ''">
+			and t.customer_type=#{customer_type}
+		</if>
+
+		<if test="customer_lable != null and customer_lable != ''">
+			and FIND_IN_SET(#{customer_lable},t.customer_lable)
+		</if>
+
+		<if test="customer_id != null and customer_id != ''">
+			and t.customer_id=#{customer_id}
+		</if>
+
+		<if test="customer_phone != null and customer_phone != ''">
+			and t.customer_phone like concat('%',#{customer_phone})
+		</if>
+		
+		<if test="cus_id != null and cus_id != ''">
+			and t.rec_id not in (select cr.relation_customerId from d_customer_relation cr where cr.rec_status='1' and cr.customer_id=#{cus_id})
+			and t.rec_id not in (#{cus_id})
+		</if>
+		
+		
+	</select>
+
+	<!-- getCustomer : 获取指定id的客户信息数据 -->
+	<select id="getCustomer" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

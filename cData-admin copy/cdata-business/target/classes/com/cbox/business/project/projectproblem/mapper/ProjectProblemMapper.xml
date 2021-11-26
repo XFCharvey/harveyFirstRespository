@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.project.projectproblem.mapper.ProjectProblemMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.problem_code,
+				t.proj_guid,
+				t.batch_id,
+				t.type,
+				t.room_id,
+				t.room_name,
+				t.position_name,
+				t.problem_descr,
+				t.contractor_name,
+				t.emergency_degree,
+				t.status,
+				t.regist_person,
+				t.regist_time,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_project_problem t
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listProjectProblem : 获取项目开放、交付问题列表数据 -->
+	<select id="listProjectProblem" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id like concat('%',#{rec_id},'%')
+		</if>
+		<if test="problem_code != null and problem_code != ''">
+			 and t.problem_code like concat('%',#{problem_code},'%')
+		</if>
+		<if test="proj_guid != null and proj_guid != ''">
+			 and t.proj_guid like concat('%',#{proj_guid},'%')
+		</if>
+		<if test="batch_id != null and batch_id != ''">
+			 and t.batch_id like concat('%',#{batch_id},'%')
+		</if>
+		<if test="type != null and type != ''">
+			 and t.type like concat('%',#{type},'%')
+		</if>
+		<if test="room_id != null and room_id != ''">
+			 and t.room_id like concat('%',#{room_id},'%')
+		</if>
+		<if test="room_name != null and room_name != ''">
+			 and t.room_name like concat('%',#{room_name},'%')
+		</if>
+		<if test="position_name != null and position_name != ''">
+			 and t.position_name like concat('%',#{position_name},'%')
+		</if>
+		<if test="problem_descr != null and problem_descr != ''">
+			 and t.problem_descr like concat('%',#{problem_descr},'%')
+		</if>
+		<if test="contractor_name != null and contractor_name != ''">
+			 and t.contractor_name like concat('%',#{contractor_name},'%')
+		</if>
+		<if test="emergency_degree != null and emergency_degree != ''">
+			 and t.emergency_degree like concat('%',#{emergency_degree},'%')
+		</if>
+		<if test="status != null and status != ''">
+			 and t.status like concat('%',#{status},'%')
+		</if>
+		<if test="regist_person != null and regist_person != ''">
+			 and t.regist_person like concat('%',#{regist_person},'%')
+		</if>
+		<if test="regist_time != null and regist_time != ''">
+			 and t.regist_time like concat('%',#{regist_time},'%')
+		</if>
+	</select>
+
+	<!-- getProjectProblem : 获取指定id的项目开放、交付问题数据 -->
+	<select id="getProjectProblem" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

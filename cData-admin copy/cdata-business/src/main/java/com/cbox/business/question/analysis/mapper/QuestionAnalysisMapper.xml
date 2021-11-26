@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.question.analysis.mapper.QuestionAnalysisMapper">
+
+	<!-- 批量插入d_exam_record_option -->
+	<insert id="insertRecordOptionBatch" parameterType="hashmap">
+		insert into d_exam_record_option
+		(qbank_id, record_id, item_key, item_value, rec_updatetime) 
+		values 
+		<foreach collection="list" item="item" separator=",">
+			(#{item.qbank_id}, #{item.record_id}, #{item.item_key}, #{item.item_value}, now())
+		</foreach>
+	</insert>
+
+
+</mapper>

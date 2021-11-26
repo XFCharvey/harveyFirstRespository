@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.info.infocarousel.mapper.InfoCarouselMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.carousel_img,
+				t.carousel_title,
+				t.info_menu_id,
+				m.menu_name,
+				t.relation_id,
+				t.carousel_type,
+				t.carousel_level,
+				t.carousel_status,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_carousel t
+			left join s_info_menu m on t.info_menu_id=m.rec_id
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listInfoCarousel : 获取资讯轮播图列表数据 -->
+	<select id="listInfoCarousel" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id=#{rec_id}
+		</if>
+		<if test="info_menu_id != null and info_menu_id != ''">
+			 and t.info_menu_id=#{info_menu_id}
+		</if>
+		<if test="carousel_title != null and carousel_title != ''">
+			 and t.carousel_title like concat('%',#{carousel_title},'%')
+		</if>
+		<if test="carousel_type != null and carousel_type != ''">
+			 and t.carousel_type=#{carousel_type}
+		</if>
+		<if test="relation_id != null and relation_id != ''">
+			 and t.relation_id=#{relation_id}
+		</if>
+		<if test="carousel_level != null and carousel_level != ''">
+			 and t.carousel_level=#{carousel_level}
+		</if>
+		<if test="carousel_status != null and carousel_status != ''">
+			 and t.carousel_status=#{carousel_status}
+		</if>
+		order by carousel_level asc
+	</select>
+
+	<!-- getInfoCarousel : 获取指定id的资讯轮播图数据 -->
+	<select id="getInfoCarousel" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

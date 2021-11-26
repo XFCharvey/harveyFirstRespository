@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.info.infofavorite.mapper.InfoFavoriteMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.info_id,
+				t.f_person,
+				t.f_time,
+				d.info_title,
+				d.title_img,
+				d.info_type,
+				s.rec_lname,
+				s.menu_name,
+				u.nick_name as user_name
+			from d_info_favorite t
+			left join d_info d on t.info_id=d.rec_id
+			left join s_info_menu s on d.info_menuid=s.rec_id
+			left join sys_user u on t.f_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listInfoFavorite : 获取资讯收藏列表数据 -->
+	<select id="listInfoFavorite" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		where 1=1
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id=#{rec_id}
+		</if>
+		<if test="info_id != null and info_id != ''">
+			 and t.info_id=#{info_id}
+		</if>
+		<if test="f_person != null and f_person != ''">
+			 and t.f_person=#{f_person}
+		</if>
+		<if test="f_time != null and f_time != ''">
+			 and t.f_time=#{f_time}
+		</if>
+		order by t.f_time desc
+	</select>
+
+	<!-- getInfoFavorite : 获取指定id的资讯收藏数据 -->
+	<select id="getInfoFavorite" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

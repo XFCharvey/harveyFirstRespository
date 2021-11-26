@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.project.projectnodedelayhis.mapper.ProjectNodeDelayHisMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.node_id,
+				t.delay_deadline,
+				t.node_deadline,
+				t.delay_reason,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_project_node_delayhis t
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listProjectNodeDelayHis : 获取项目节点延期列表数据 -->
+	<select id="listProjectNodeDelayHis" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="node_id != null and node_id != ''">
+			 and t.node_id like concat('%',#{node_id},'%')
+		</if>
+		<if test="delay_deadline != null and delay_deadline != ''">
+			 and t.delay_deadline like concat('%',#{delay_deadline},'%')
+		</if>
+		<if test="node_deadline != null and node_deadline != ''">
+			 and t.node_deadline like concat('%',#{node_deadline},'%')
+		</if>
+		<if test="delay_reason != null and delay_reason != ''">
+			 and t.delay_reason like concat('%',#{delay_reason},'%')
+		</if>
+	</select>
+
+	<!-- getProjectNodeDelayHis : 获取指定id的项目节点延期数据 -->
+	<select id="getProjectNodeDelayHis" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

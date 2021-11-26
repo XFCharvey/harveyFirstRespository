@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.activity.activityfocus.mapper.ActivityFocusMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.activity_id,
+				a.rec_id as a_rec_id,
+				a.act_name,
+				a.act_attr,
+				a.act_img,
+				t.focus_person,
+				t.focus_time,
+				u.nick_name as user_name
+			from d_activity_focus t
+			left join d_activity a on t.activity_id=a.rec_id
+			left join sys_user u on t.focus_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listActivityFocus : 获取活动关注列表数据 -->
+	<select id="listActivityFocus" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where 1=1
+		<if test="activity_id != null and activity_id != ''">
+			 and t.activity_id=#{activity_id}
+		</if>
+		<if test="focus_person != null and focus_person != ''">
+			 and t.focus_person =#{focus_person}
+		</if>
+		<if test="focus_time != null and focus_time != ''">
+			 and t.focus_time like concat(#{focus_time},'%')
+		</if>
+	</select>
+
+	<!-- getActivityFocus : 获取指定id的活动关注数据 -->
+	<select id="getActivityFocus" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

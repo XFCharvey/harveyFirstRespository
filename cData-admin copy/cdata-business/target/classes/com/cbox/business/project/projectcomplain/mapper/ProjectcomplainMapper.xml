@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.project.projectcomplain.mapper.ProjectcomplainMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_id,
+				p.project_name,
+				t.time_type,
+				t.complain_time,
+				t.total_num,
+				t.close_num,
+				t.close_rate,
+				t.satisfy_rate,
+				t.reply_out_num,
+				t.replay_out_rate,
+				t.deal_out_num,
+				t.deal_out_rate,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_project_complain t
+			left join sys_user u on t.rec_person=u.user_name
+			left join d_project p on t.project_id=p.rec_id
+		]]>
+	</sql>
+
+	<!-- listProjectcomplain : 获取项目投诉/维修统计列表数据 -->
+	<select id="listProjectcomplain" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+		where 1=1 
+		<if test="project_id != null and project_id != ''">
+			and t.project_id =#{project_id}
+		</if>
+		<if test="project_id == null or project_id == ''">
+			and t.project_id is not null and t.project_id !=""
+		</if>
+		<if test="complain_type != null and complain_type != ''">
+			and t.complain_type =#{complain_type}
+		</if>
+		<if test="time_type != null and time_type != ''">
+			and t.time_type =#{time_type}
+		</if>
+		<if test="complain_time != null and complain_time != ''">
+			and t.complain_time =#{complain_time}
+		</if>
+		<if test="total_num != null and total_num != ''">
+			and t.total_num =#{total_num}
+		</if>
+		<if test="close_num != null and close_num != ''">
+			and t.close_num =#{close_num}
+		</if>
+		<if test="close_rate != null and close_rate != ''">
+			and t.close_rate =#{close_rate}
+		</if>
+		<if test="satisfy_rate != null and satisfy_rate != ''">
+			and t.satisfy_rate =#{satisfy_rate}
+		</if>
+		<if test="reply_out_num != null and reply_out_num != ''">
+			and t.reply_out_num =#{reply_out_num}
+		</if>
+		<if test="replay_out_rate != null and replay_out_rate != ''">
+			and t.replay_out_rate =#{replay_out_rate}
+		</if>
+		<if test="deal_out_num != null and deal_out_num != ''">
+			and t.deal_out_num =#{deal_out_num}
+		</if>
+		<if test="deal_out_rate != null and deal_out_rate != ''">
+			and t.deal_out_rate =#{deal_out_rate}
+		</if>
+		ORDER BY t.total_num limit 0,10
+	</select>
+
+	<!-- getProjectcomplain : 获取指定id的项目投诉/维修统计数据 -->
+	<select id="getProjectcomplain" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

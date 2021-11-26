@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.project.projecthouses.mapper.ProjectHousesMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_id,
+				t.proj_guid,
+				t.project_guid,
+				t.building_id,
+				t.house_name,
+				t.house_status,
+				t.house_type,
+				t.house_area,
+				t.house_buildarea,
+				t.single_price,
+				t.total_price,
+				t.pay_method,
+				t.contract_time,
+				t.contract_delivery_time,
+				t.actual_delivery_time,
+				t.counselor,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_project_houses t
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listProjectHouses : 获取项目楼栋房源列表数据 -->
+	<select id="listProjectHouses" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.project_id =#{project_id}
+		</if>
+		<if test="project_guid != null and project_guid != ''">
+			and t.project_guid =#{project_guid}
+		</if>
+		<if test="proj_guid != null and proj_guid != ''">
+			and t.proj_guid =#{proj_guid}
+		</if>
+		<if test="building_id != null and building_id != ''">
+			and t.building_id=#{building_id}
+		</if>
+		
+		<if test="house_name != null and house_name != ''">
+			and t.house_name like concat('%',#{house_name},'%')
+		</if>
+		<if test="house_area != null and house_area != ''">
+			and t.house_area=#{house_area}
+		</if>
+		<if test="total_price != null and total_price != ''">
+			and t.total_price=#{total_price}
+		</if>
+		<if test="counselor != null and counselor != ''">
+			and t.counselor=#{counselor}
+		</if>
+		
+		<if test="house_status != null and house_status != ''">
+			and t.house_status=#{house_status}
+		</if>
+		<if test="house_type != null and house_type != ''">
+			and t.house_type=#{house_type}
+		</if>
+		<if test="contract_time != null and contract_time != ''">
+			and t.contract_time like concat(#{contract_time},'%')
+		</if>
+		<if test="belong_person != null and belong_person != ''">
+			and t.belong_person=#{belong_person}
+		</if>
+	</select>
+
+	<!-- getProjectHouses : 获取指定id的项目楼栋房源数据 -->
+	<select id="getProjectHouses" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+	
+	<!-- getHousesStatusGroup : 获取指定id项目的项目楼栋房源状态分组数量 -->
+	<select id="getHousesStatusGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				SUM( case when t.house_status="0" then 1 else 0 end) as for_sale,
+				SUM( case when t.house_status="1" then 1 else 0 end) as Signed,
+				SUM( case when t.house_status="2" then 1 else 0 end) as sold 
+			from (select house_status from d_project_houses t where rec_status='1' and project_id=#{project_id}) t
+		]]>
+	</select>
+	
+	<!-- listHouseOfCustomerId : 获取指定id客户的房源列表 -->
+	<select id="listHouseOfCustomerId" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				ch.customer_id,
+				p.rec_id as project_id,
+				p.project_name,
+				t.house_name,
+				t.house_status,
+				t.house_area,
+				t.total_price,
+				t.counselor,
+				t.contract_time,
+				t.contract_delivery_time,
+				t.actual_delivery_time
+			from d_project_houses t LEFT JOIN d_customer_houses ch on t.rec_id=ch.house_id left join d_project p on t.project_id=p.rec_id
+		]]>
+		where t.rec_status='1'
+		<if test="customer_id != null and customer_id != ''">
+			and ch.customer_id = #{customer_id}
+		</if>
+		ORDER BY t.actual_delivery_time DESC
+	</select>
+
+</mapper>

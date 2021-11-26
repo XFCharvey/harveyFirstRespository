@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.filemanage.mapper.FileZoneRecordMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		select id, 
+			zone_name zoneName, 
+			zone_path zonePath, 
+			zone_md5 zoneMd5, 
+			zone_record_date zoneRecordDate, 
+			zone_check_date zoneCheckDate, 
+			zone_total_count zoneTotalCount, 
+			zone_total_size zoneTotalSize, 
+			zone_start_size zoneStartSize, 
+			zone_end_size zoneEndSize, 
+			zone_total_md5 zoneTotalMd5, 
+			zone_now_index zoneNowIndex, 
+			zone_suffix zoneSuffix, 
+			file_record_id fileRecordId
+		from d_sys_file_zone_record t
+	</sql>
+
+	<!-- getFileZoneRecord :  -->
+	<select id="getFileZoneRecord" resultType="com.cbox.business.filemanage.entity.FileZoneRecord">
+		<include refid="selectVO"/>
+		where t.zone_md5=#{zoneMd5} and zone_total_md5=#{zoneTotalMd5}
+		limit 1
+	</select>
+	
+	<select id="selectList" resultType="com.cbox.business.filemanage.entity.FileZoneRecord">
+		<include refid="selectVO"/>
+		where zone_total_md5=#{zoneTotalMd5}
+		order by zone_now_index asc
+	</select>
+	
+	<insert id="save">
+		INSERT INTO d_sys_file_zone_record
+		(id, zone_name, zone_path, zone_md5, zone_record_date, zone_check_date, zone_total_count, zone_total_size, 
+		zone_start_size, zone_end_size, zone_total_md5, zone_now_index, zone_suffix, file_record_id) 
+		VALUES 
+		(#{id}, #{zoneName}, #{zonePath}, #{zoneMd5}, #{zoneRecordDate}, #{zoneCheckDate}, #{zoneTotalCount}, #{zoneTotalSize}, 
+		#{zoneStartSize}, #{zoneEndSize}, #{zoneTotalMd5}, #{zoneNowIndex}, #{zoneSuffix}, #{fileRecordId});
+	</insert>
+	
+	<delete id="removeByIds">
+		delete from d_sys_file_zone_record t
+		where t.id in
+        <foreach item="item" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</delete>
+	
+
+</mapper>

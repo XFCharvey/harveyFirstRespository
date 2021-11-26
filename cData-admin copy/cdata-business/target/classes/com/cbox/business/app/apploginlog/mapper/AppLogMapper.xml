@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.app.apploginlog.mapper.AppLogMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.user_name,
+				t.login_time
+			from d_user_applogin_log t
+		]]>
+	</sql>
+
+	<!-- listAppLoginLog : 获取app登录日志列表数据 -->
+	<select id="listAppLoginLog" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="user_name != null and user_name != ''">
+			 and t.user_name=#{user_name}
+		</if>
+		<if test="login_time != null and login_time != ''">
+			 and t.login_time like concat(#{login_time},'%')
+		</if>
+	</select>
+
+	<!-- getAppLoginLog : 获取指定id的app登录日志数据 -->
+	<select id="getAppLoginLog" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

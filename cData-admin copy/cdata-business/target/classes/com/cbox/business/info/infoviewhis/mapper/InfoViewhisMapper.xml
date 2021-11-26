@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.info.infoviewhis.mapper.InfoViewhisMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.info_id,
+				t.view_person,
+				t.view_time,
+				t.view_num,
+				t.view_status,
+				d.info_title,
+				d.title_img,
+				d.info_type,
+				d.info_menuid,
+				d.is_course,
+				m.menu_name,
+				u.nick_name as user_name
+			from d_info_viewhis t
+			left join d_info d on t.info_id=d.rec_id
+			left join s_info_menu m on d.info_menuid = m.rec_id
+			left join sys_user u on t.view_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listInfoViewhis : 获取浏览历史列表数据 -->
+	<select id="listInfoViewhis" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		where t.view_status='1'
+		<if test="rec_id != null and rec_id != ''">
+			 and t.rec_id=#{rec_id}
+		</if>
+		<if test="info_id != null and info_id != ''">
+			 and t.info_id=#{info_id}
+		</if>
+		<if test="view_person != null and view_person != ''">
+			 and t.view_person=#{view_person}
+		</if>
+		<if test="view_time != null and view_time != ''">
+			 and t.view_time = #{view_time}
+		</if>
+		order by t.view_time desc
+	</select>
+
+	<!-- getInfoViewhis : 获取指定id的浏览历史数据 -->
+	<select id="getInfoViewhis" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+		where t.view_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+	<!-- getUserInfoViewhis : 获取指定用户和指定资讯浏览历史数据 -->
+	<select id="getUserInfoViewhis" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.view_person=#{view_person} and t.info_id=#{info_id}
+	</select>
+	
+
+</mapper>

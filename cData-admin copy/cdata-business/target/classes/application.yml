@@ -1,0 +1,212 @@
+cbox:
+  # 名称
+  name: Cbox
+  # 版本
+  version: 3.2.0
+  # 版权年份
+  copyrightYear: 2020
+  # 文件路径 示例（ Windows配置D:/cbox/uploadPath，Linux配置 /home/cbox/uploadPath）
+  profile: d:/develop/uploadPath
+  # 获取ip地址开关
+  addressEnabled: false
+  # 验证码类型 math 数组计算 char 字符验证
+  captchaType: math
+  # 数据库模式：false-单库模式，只有主库；true-多库模式，每个数据中心库独立
+  datacenter-multidb: false
+  config-path: D:\Tonghui WORK\03-融创客户数据平台/00-code/trunk/cData-admin/cdata-business/src/main/resources/
+
+# 开发环境配置
+server:
+  # 服务器的HTTP端口，默认为8080
+  port: 8181
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # tomcat最大线程数，默认为200
+    max-threads: 800
+    # Tomcat启动初始化的线程数，默认值25
+    min-spare-threads: 30
+
+# 日志配置
+logging:
+  level:
+    com.cbox: debug
+    org.springframework: warn
+
+# Spring配置
+spring:
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  profiles: 
+    active: druid
+  # 文件上传
+  servlet:
+     multipart:
+       # 单个文件大小
+       max-file-size:  500MB
+       # 设置总上传的文件大小
+       max-request-size:  500MB
+  # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
+  # redis 配置
+  redis:
+    # 地址
+    host: 101.37.24.56
+    # 端口，默认为6379
+    port: 6379
+    # 密码
+    password: cbox-test-2020
+    database: 7
+    # 连接超时时间
+    timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池的最大数据库连接数
+        max-active: 8
+        # #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+  # 返回json配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+# 163邮箱发送
+spring.mail:
+# 客户端,邮件服务器地址。要是qq邮箱就是smtp.qq.com
+    host: smtp.163.com
+    #发件人邮箱地址
+    username: rongkac@163.com
+    #授权码
+    password: TJVRUMWEFCPLCVYT
+    # 编码格式
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+
+
+# token配置
+token:
+    # 令牌自定义标识
+  header: Authorization
+    # 令牌密钥
+  secret: abcdefghijklmnopqrstuvwxyz
+    # 令牌有效期（默认30分钟）
+  expireTime: 30
+  # app令牌有效期（默认30天*24*60）
+  appExpireTime: 43200
+  
+# MyBatis配置
+mybatis:
+    # 搜索指定包别名
+    typeAliasesPackage: com.cbox.**.domain
+    # 配置mapper的扫描，找到所有的mapper.xml映射文件
+    mapperLocations: classpath*:com/cbox/**/*Mapper.xml
+    # 加载全局的配置文件
+    configLocation: classpath:mybatis/mybatis-config.xml
+
+# PageHelper分页插件
+pagehelper: 
+  helperDialect: mysql
+  reasonable: false
+  supportMethodsArguments: true
+  params: count=countSql 
+
+# Swagger配置
+swagger:
+  # 是否开启swagger
+  enabled: true
+  # 请求前缀
+  pathMapping: /dev-api
+
+# 防止XSS攻击
+xss: 
+  # 过滤开关
+  enabled: true
+  # 排除链接（多个用逗号分隔）
+  excludes: /system/notice/*
+  # 匹配链接
+  urlPatterns: /system/*,/monitor/*,/tool/*
+
+#文件上传配置
+fileupload:
+  config:
+    # 文件上传目录
+    uploadFolder: D:/develop/webupload/
+    #静态资源对外暴露的访问路径(访问图片的路径)
+    staticAccessPath: storage/**
+    # 设备截图文件保存路径(文件存在具体的文件夹的路径)
+    localPath: fileData/
+    #用户头像存放
+    userHeaderPicPath: user/
+    #档案文件存放
+    archivesFilePath: webuploadfile/
+    #访问域名和端口
+    domain: http://localhost:${server.port}${server.servlet.context-path}
+
+python:
+  config:
+    # python脚本目录
+    py-path: D:/develop/pycode/
+    # python命令 python 或python3
+    compiler-python: python
+
+# 微信配置
+weixin:
+  appId: wxc3951b239ee96fd1
+  appsecret: 81cde60569cd7fc2a42b00fe530e0eb8
+  accessTokenUrl: https://api.weixin.qq.com/sns/oauth2/access_token?
+  userInfoUrl: https://api.weixin.qq.com/sns/userinfo?
+# 公众号配置(必填)
+wx:
+  mp:
+    appId: wxf48b8789b473745d
+    secret: bd89ac2517e65086082faa6a943d1cfb
+    token: HOF48rtNSyQ36X6Nn2ebUaDsnQogpeVC
+    aesKey: hGXS2oHwkHrR4rv8rE27xUeqz8eMHeoRac9BWFWJ6OF
+#阿里短信
+ali:
+  sms:
+    accessKeyId: LTAI4GGrxNbQNjXPew23nwjt
+    accessKeySecret: 6JJx9NFKdhtulo5q9yQd0qMHAHdIs9
+    # 签名
+    signName: 通慧教育
+    # 登录模板
+    loginTemplate: SMS_191210108
+    # 账号激活通知
+    activeTemplate: SMS_219738981
+    # 投诉短信通知新
+    tousuTemplate: SMS_224135245
+#直播配置
+live:
+  pushDomain: 145707.livepush.myqcloud.com
+  playDomain: liveplay.simplesty.com
+  appName: minb #app名称
+  pushKey: 2da0fa1a9177ebc010c0269b5b80cd8b
+  pullKey: F087hKKeaAK96MOtCANoJEZCxQGVye9q
+  secretId: AKIDMcouy4AHKFwPeiX7SdhntyzrY1HMJAsT
+  secretKey: Vt7DJJ9l8G9pHWXJq8D5jCUYNyKRKzOY
+#消息推送
+push:
+  pkgName: uni.UNIBBC2C49
+  appId: VFupW9rLov8U7cm9hvxZm6
+  appKey: qltJgFaJRV9rAJnstYqWG4
+  masterSecret: 77DEPrtvzJAcUfDd4Rq0M2
+

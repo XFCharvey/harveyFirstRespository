@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.customer.customerfamily.mapper.CustomerFamilyMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.customer_id,
+				t.family_name,
+				t.family_phone,
+				c.rec_id as family_customer_id,
+				(select count(ch.rec_id) from d_customer_houses ch where family_customer_id=ch.customer_id ) as family_houses_num,
+				c.customer_type,
+				c.customer_status,
+				t.family_relations,
+				t.family_birthday,
+                YEAR(NOW()) - YEAR(t.family_birthday) as family_age,
+				t.family_hobby,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_customer_family t
+			left join sys_user u on t.rec_person=u.user_name
+			left join d_customer c on t.family_phone=c.customer_phone
+		]]>
+	</sql>
+
+	<!-- listCustomerFamily : 获取客户家庭成员列表数据 -->
+	<select id="listCustomerFamily" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="customer_id != null and customer_id != ''">
+			 and t.customer_id=#{customer_id}
+		</if>
+		<if test="family_phone != null and family_phone != ''">
+			 and t.family_phone=#{family_phone}
+		</if>
+	</select>
+
+	<!-- getCustomerFamily : 获取指定id的客户家庭成员数据 -->
+	<select id="getCustomerFamily" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

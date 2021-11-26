@@ -1,0 +1,74 @@
+00:24:04.583 [main] INFO  c.c.CDataApplication - [logStarting,50] - Starting CDataApplication on apples-MacBook-Pro.local with PID 7133 (/Users/apple/Desktop/rc/00-code/trunk/cData-admin/cdata-business/target/classes started by apple in /Users/apple/Desktop/rc/00-code/trunk/cData-admin)
+00:24:04.585 [main] INFO  c.c.CDataApplication - [logStartupProfileInfo,652] - The following profiles are active: druid
+00:24:07.311 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-8181"]
+00:24:07.323 [main] INFO  o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+00:24:07.324 [main] INFO  o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/9.0.38]
+00:24:07.438 [main] INFO  o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+00:24:13.374 [main] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+00:24:13.824 [main] INFO  i.l.c.EpollProvider - [<clinit>,68] - Starting without optional epoll library
+00:24:13.826 [main] INFO  i.l.c.KqueueProvider - [<clinit>,70] - Starting without optional kqueue library
+00:24:20.368 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1220] - Using default implementation for ThreadExecutor
+00:24:20.380 [main] INFO  o.q.c.SchedulerSignalerImpl - [<init>,61] - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+00:24:20.380 [main] INFO  o.q.c.QuartzScheduler - [<init>,229] - Quartz Scheduler v.2.3.2 created.
+00:24:20.385 [main] INFO  o.q.c.QuartzScheduler - [initialize,294] - Scheduler meta-data: Quartz Scheduler (v2.3.2) 'CboxScheduler' with instanceId 'apples-MacBook-Pro.local1637857460370'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 20 threads.
+  Using job-store 'org.springframework.scheduling.quartz.LocalDataSourceJobStore' - which supports persistence. and is clustered.
+
+00:24:20.386 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1374] - Quartz scheduler 'CboxScheduler' initialized from an externally provided properties instance.
+00:24:20.386 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1378] - Quartz scheduler version: 2.3.2
+00:24:20.387 [main] INFO  o.q.c.QuartzScheduler - [setJobFactory,2293] - JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@2cc97e47
+00:24:32.771 [main] INFO  s.d.s.w.PropertySourcedRequestMappingHandlerMapping - [initHandlerMethods,69] - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+00:24:34.577 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,160] - Context refreshed
+00:24:34.602 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,163] - Found 1 custom documentation plugin(s)
+00:24:34.746 [main] INFO  s.d.s.w.s.ApiListingReferenceScanner - [scan,41] - Scanning for api listing references
+00:24:34.924 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Starting ProtocolHandler ["http-nio-8181"]
+00:24:34.950 [main] INFO  c.c.CDataApplication - [logStarted,59] - Started CDataApplication in 30.977 seconds (JVM running for 32.197)
+00:24:36.341 [Quartz Scheduler [CboxScheduler]] INFO  o.q.c.QuartzScheduler - [start,547] - Scheduler CboxScheduler_$_apples-MacBook-Pro.local1637857460370 started.
+00:30:09.947 [Thread-65] INFO  o.q.c.QuartzScheduler - [standby,585] - Scheduler CboxScheduler_$_apples-MacBook-Pro.local1637857460370 paused.
+00:30:09.955 [Thread-65] INFO  o.q.c.QuartzScheduler - [shutdown,666] - Scheduler CboxScheduler_$_apples-MacBook-Pro.local1637857460370 shutting down.
+00:30:09.955 [Thread-65] INFO  o.q.c.QuartzScheduler - [standby,585] - Scheduler CboxScheduler_$_apples-MacBook-Pro.local1637857460370 paused.
+00:30:09.956 [Thread-65] INFO  o.q.c.QuartzScheduler - [shutdown,740] - Scheduler CboxScheduler_$_apples-MacBook-Pro.local1637857460370 shutdown complete.
+00:30:09.957 [Thread-65] INFO  sys-user - [shutdownAsyncManager,31] - ====关闭后台任务任务线程池====
+00:30:09.965 [Thread-65] INFO  c.a.d.p.DruidDataSource - [close,2032] - {dataSource-1} closing ...
+00:30:09.971 [Thread-65] INFO  c.a.d.p.DruidDataSource - [close,2104] - {dataSource-1} closed
+00:30:16.173 [main] INFO  c.c.CDataApplication - [logStarting,50] - Starting CDataApplication on apples-MacBook-Pro.local with PID 7276 (/Users/apple/Desktop/rc/00-code/trunk/cData-admin/cdata-business/target/classes started by apple in /Users/apple/Desktop/rc/00-code/trunk/cData-admin)
+00:30:16.175 [main] INFO  c.c.CDataApplication - [logStartupProfileInfo,652] - The following profiles are active: druid
+00:30:18.825 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-8181"]
+00:30:18.838 [main] INFO  o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+00:30:18.838 [main] INFO  o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/9.0.38]
+00:30:18.943 [main] INFO  o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+00:30:24.567 [main] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+00:30:25.262 [main] INFO  i.l.c.EpollProvider - [<clinit>,68] - Starting without optional epoll library
+00:30:25.263 [main] INFO  i.l.c.KqueueProvider - [<clinit>,70] - Starting without optional kqueue library
+00:30:32.060 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1220] - Using default implementation for ThreadExecutor
+00:30:32.071 [main] INFO  o.q.c.SchedulerSignalerImpl - [<init>,61] - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+00:30:32.072 [main] INFO  o.q.c.QuartzScheduler - [<init>,229] - Quartz Scheduler v.2.3.2 created.
+00:30:32.077 [main] INFO  o.q.c.QuartzScheduler - [initialize,294] - Scheduler meta-data: Quartz Scheduler (v2.3.2) 'CboxScheduler' with instanceId 'apples-MacBook-Pro.local1637857832062'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 20 threads.
+  Using job-store 'org.springframework.scheduling.quartz.LocalDataSourceJobStore' - which supports persistence. and is clustered.
+
+00:30:32.077 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1374] - Quartz scheduler 'CboxScheduler' initialized from an externally provided properties instance.
+00:30:32.077 [main] INFO  o.q.i.StdSchedulerFactory - [instantiate,1378] - Quartz scheduler version: 2.3.2
+00:30:32.079 [main] INFO  o.q.c.QuartzScheduler - [setJobFactory,2293] - JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@5751e53e
+00:30:44.171 [main] INFO  s.d.s.w.PropertySourcedRequestMappingHandlerMapping - [initHandlerMethods,69] - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+00:30:45.694 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,160] - Context refreshed
+00:30:45.711 [main] INFO  s.d.s.w.p.DocumentationPluginsBootstrapper - [start,163] - Found 1 custom documentation plugin(s)
+00:30:45.786 [main] INFO  s.d.s.w.s.ApiListingReferenceScanner - [scan,41] - Scanning for api listing references
+00:30:45.988 [main] INFO  o.a.c.h.Http11NioProtocol - [log,173] - Starting ProtocolHandler ["http-nio-8181"]
+00:30:46.013 [main] INFO  c.c.CDataApplication - [logStarted,59] - Started CDataApplication in 30.274 seconds (JVM running for 31.168)
+00:30:47.235 [Quartz Scheduler [CboxScheduler]] INFO  o.q.c.QuartzScheduler - [start,547] - Scheduler CboxScheduler_$_apples-MacBook-Pro.local1637857832062 started.
+00:40:47.344 [Thread-63] INFO  o.q.c.QuartzScheduler - [standby,585] - Scheduler CboxScheduler_$_apples-MacBook-Pro.local1637857832062 paused.
+00:40:47.353 [Thread-63] INFO  o.q.c.QuartzScheduler - [shutdown,666] - Scheduler CboxScheduler_$_apples-MacBook-Pro.local1637857832062 shutting down.
+00:40:47.354 [Thread-63] INFO  o.q.c.QuartzScheduler - [standby,585] - Scheduler CboxScheduler_$_apples-MacBook-Pro.local1637857832062 paused.
+00:40:47.487 [Thread-63] INFO  o.q.c.QuartzScheduler - [shutdown,740] - Scheduler CboxScheduler_$_apples-MacBook-Pro.local1637857832062 shutdown complete.
+00:40:47.487 [Thread-63] INFO  sys-user - [shutdownAsyncManager,31] - ====关闭后台任务任务线程池====
+00:40:47.499 [Thread-63] INFO  c.a.d.p.DruidDataSource - [close,2032] - {dataSource-1} closing ...
+00:40:47.501 [Thread-63] INFO  c.a.d.p.DruidDataSource - [close,2104] - {dataSource-1} closed

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.timetask.rule.mapper.RuleCommonMapper">
+
+	<!-- 批量插入detail表 -->
+	<insert id="insertRuleDetailBatch" parameterType="hashmap">
+		insert into d_rule_trigger_detail
+		(rule_trigger_id, rule_type, detail_key, detail_descr) 
+		values 
+		<foreach collection="list" item="item" separator=",">
+			(#{rule_trigger_id}, #{rule_type}, #{item.detail_key}, #{item.detail_descr})
+		</foreach>
+	</insert>
+	
+	<!-- 批量更新d_project_node表 -->
+	<update id="updateProjctNodeBatch" parameterType="hashmap">		
+		update d_project_node 
+			set 
+			rec_updatetime = now(),
+			node_status=
+		<foreach collection="list" item="item" index="index"
+	             separator=" " open="case" close="end">
+	      	when rec_id=#{item.rec_id} then #{item.node_status}
+	    </foreach>
+	    where rec_id in
+	    <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+	        #{item.rec_id}
+	    </foreach>
+	</update>
+	
+	<!-- 取签约30天(1个月)到1年(370天)的数据 -->
+	<select id="getHouseBySign" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_id,
+				t.house_name,
+				t.contract_time,
+				DATEDIFF(now(),t.contract_time) as contract_day
+			from d_project_houses t
+			where DATEDIFF(now(),t.contract_time)>30 and DATEDIFF(now(),t.contract_time)<370
+		]]>
+	</select>
+	
+	<!-- 取最近10天交房的数据 -->
+	<select id="getHouseByDeliver" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_id,
+				t.house_name,
+				t.actual_delivery_time
+			from d_project_houses t
+			where DATEDIFF(now(),t.actual_delivery_time)<10
+		]]>
+	</select>
+	
+	
+	<!-- 取最近10天的投诉工单，按完成时间算 -->
+	<select id="getComplainTask" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select DATEDIFF(now(),t.finish_time) as diff_day,t.* 
+			from d_worktask t
+			where t.task_type='complain'
+			and DATEDIFF(now(),t.finish_time)<10
+		]]>
+	</select>
+	
+	 <!-- 获取未完成的项目数据  -->
+    <select id="getProjectNoEnd" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select t.* 
+			from d_project t
+			where t.project_status in ('0','1','2','3')
+		]]>
+	</select>
+
+
+</mapper>

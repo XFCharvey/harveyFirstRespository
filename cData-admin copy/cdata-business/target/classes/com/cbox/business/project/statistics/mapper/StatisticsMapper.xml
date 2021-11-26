@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.project.statistics.mapper.StatisticsMapper">
+
+	<!-- listProjectQuestionTotal : 获取不同项目昨日新增，交付统计列表 -->
+	<select id="listProjectQuestionTotal"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				t.proj_guid,
+				(select count(1) from d_project_problem p where p.proj_guid=t.proj_guid and p.type='1') as kf_q_total,
+				(select count(1) from d_project_problem p where p.proj_guid=t.proj_guid and p.type='2') as jf_q_total 
+			from d_project t
+		]]>
+	</select>
+
+	<!-- getProjectproblemTotal : 获取具体项目、具体问题类型、时间范围 房间数、问题数统计 -->
+	<select id="getProjectproblemTotal"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				(select count(1) from (select distinct p1.room_name from d_project_problem p1 where p1.proj_guid=p.proj_guid and p1.type=#{type} and p1.regist_time between #{time_start} and #{time_end}) t) as q_room_total,
+				(select count(1) from d_project_problem p1 where p1.proj_guid=p.proj_guid and p1.type=#{type} and p1.regist_time between #{time_start} and #{time_end}) as q_total 
+			from d_project p where p.proj_guid=#{proj_guid}
+		]]>
+	</select>
+
+	<!-- listProjectQPositionGroup : 获取指定项目、问题类型、时间范围工地按部位统计饼图统计 -->
+	<select id="listProjectQPositionGroup"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.position_name,
+				count(1) as p_total
+				from 
+				d_project_problem t 
+			where 
+				t.proj_guid=#{proj_guid} and t.type=#{type} 
+				and t.regist_time between #{time_start} and #{time_end}
+				GROUP BY t.position_name
+		]]>
+	</select>
+
+	<!-- listProjectQContractorGroup : 获取指定项目、问题类型、时间范围工地承建商统计列表 -->
+	<select id="listProjectQContractorGroup"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.contractor_name,
+				count(1) as c_total
+				from d_project_problem t 
+			where 
+				t.proj_guid=#{proj_guid} and t.type=#{type} 
+				and t.regist_time between #{time_start} and #{time_end}
+				GROUP BY t.contractor_name
+		]]>
+	</select>
+
+	<!-- listProjectSurveyTotal : 获取不同项目不同阶段调研总量列表数据 -->
+	<select id="listProjectSurveyTotal"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				(select count(1) from v_project_question v where v.qbank_id=173 and v.project_id=t.rec_id) as a_month_after,
+				(select count(1) from v_project_question v where v.qbank_id=174 and v.project_id=t.rec_id) as six_month_after,
+				(select count(1) from v_project_question v where v.qbank_id=175 and v.project_id=t.rec_id) as one_year_after
+			from d_project t 
+		]]>
+		where t.rec_status='1'
+	</select>
+
+	<!-- listProjectSurveyYesAdd : 获取不同项目不同阶段调研昨日新增量列表数据 -->
+	<select id="listProjectSurveyYesAdd"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				(select count(1) from v_project_question v where v.qbank_id=173 and v.project_id=t.rec_id and v.exam_time like CONCAT(DATE_SUB(curdate(),INTERVAL 1 DAY),"%")) as a_month_aAdd,
+				(select count(1) from v_project_question v where v.qbank_id=174 and v.project_id=t.rec_id and v.exam_time like CONCAT(DATE_SUB(curdate(),INTERVAL 1 DAY),"%")) as six_month_aAdd,
+				(select count(1) from v_project_question v where v.qbank_id=175 and v.project_id=t.rec_id and v.exam_time like CONCAT(DATE_SUB(curdate(),INTERVAL 1 DAY),"%")) as one_year_aAdd
+			from d_project t
+		]]>
+		where t.rec_status='1'
+	</select>
+
+	<!-- listProjectcomplainByMonth : 获取不同或指定项目今年本月 投诉量，关闭率，回访满意度列表数据 -->
+	<select id="listProjectcomplainByMonth"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				IFNULL((select c.total_num from d_project_complain c where c.rec_status='1' and c.complain_type=#{complain_type} and c.time_type='1' and c.complain_time=MONTH(NOW()) and YEAR(c.rec_time)=YEAR(NOW()) and c.project_id=t.rec_id ),0)  as total_num,
+				IFNULL((select c.close_rate from d_project_complain c where c.rec_status='1' and c.complain_type=#{complain_type} and c.time_type='1' and c.complain_time=MONTH(NOW()) and YEAR(c.rec_time)=YEAR(NOW()) and c.project_id=t.rec_id ),0)  as close_rate,
+				IFNULL((select c.satisfy_rate from d_project_complain c where c.rec_status='1' and c.complain_type=#{complain_type} and c.time_type='1' and c.complain_time=MONTH(NOW()) and YEAR(c.rec_time)=YEAR(NOW()) and c.project_id=t.rec_id ),0)  as satisfy_rate 
+			from d_project t 
+		]]>
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.rec_id=#{project_id}
+		</if>
+	</select>
+
+	<!-- listProjectcomplainByQuarter : 获取不同或指定项目今年本季度 投诉量，关闭率，回访满意度列表数据 -->
+	<select id="listProjectcomplainByQuarter"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				IFNULL((select c.total_num from d_project_complain c where c.rec_status='1' and c.complain_type=#{complain_type} and c.time_type='2' and c.complain_time=QUARTER(NOW()) and YEAR(c.rec_time)=YEAR(NOW()) and c.project_id=t.rec_id ),0)  as total_num,
+				IFNULL((select c.close_rate from d_project_complain c where c.rec_status='1' and c.complain_type=#{complain_type} and c.time_type='2' and c.complain_time=QUARTER(NOW()) and YEAR(c.rec_time)=YEAR(NOW()) and c.project_id=t.rec_id ),0)  as close_rate,
+				IFNULL((select c.satisfy_rate from d_project_complain c where c.rec_status='1' and c.complain_type=#{complain_type} and c.time_type='2' and c.complain_time=QUARTER(NOW()) and YEAR(c.rec_time)=YEAR(NOW()) and c.project_id=t.rec_id ),0)  as satisfy_rate 
+			from d_project t
+		]]>
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.rec_id=#{project_id}
+		</if>
+	</select>
+
+	<!-- listProjectcomplainByYear : 获取不同或指定项目今年 投诉量，关闭率，回访满意度列表数据 -->
+	<select id="listProjectcomplainByYear"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				IFNULL((select c.total_num from d_project_complain c where c.rec_status='1' and c.complain_type=#{complain_type} and c.time_type='3' and c.complain_time=YEAR(NOW()) and YEAR(c.rec_time)=YEAR(NOW()) and c.project_id=t.rec_id ),0)  as total_num,
+				IFNULL((select c.close_rate from d_project_complain c where c.rec_status='1' and c.complain_type=#{complain_type} and c.time_type='3' and c.complain_time=YEAR(NOW()) and YEAR(c.rec_time)=YEAR(NOW()) and c.project_id=t.rec_id ),0)  as close_rate,
+				IFNULL((select c.satisfy_rate from d_project_complain c where c.rec_status='1' and c.complain_type=#{complain_type} and c.time_type='3' and c.complain_time=YEAR(NOW()) and YEAR(c.rec_time)=YEAR(NOW()) and c.project_id=t.rec_id ),0)  as satisfy_rate 
+			from d_project t
+		]]>
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.rec_id=#{project_id}
+		</if>
+	</select>
+
+	<!-- getCusTotalAndYesAdd : 获取所有项目客户总数，昨日新增数数据 -->
+	<select id="getCusTotalAndYesAdd" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				COUNT(*) as customer_total, 
+				SUM(case when TO_DAYS( NOW( ) ) - TO_DAYS(rec_time) <= 1 then 1 else 0 end) as yes_add_cus 
+			from v_customer
+		]]>
+	</select>
+
+	<!-- getProCusTypeGroup : 获取所有项目客户类型分类统计数据 -->
+	<select id="getProCusTypeGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				SUM(case when customer_type='1' then 1 else 0 end) as ordinary_cus,
+				SUM(case when customer_type='2' then 1 else 0 end) as platinum_cus,
+				SUM(case when customer_type='3' then 1 else 0 end) as partner_cus,
+				SUM(case when customer_type='4' then 1 else 0 end) as sensitive_cus,
+				SUM(case when customer_type='5' then 1 else 0 end) as special_cus 
+			from v_customer 
+		]]>
+	</select>
+
+	<!-- getProCusStatusGroup : 获取所有项目客户状态分类统计数据 -->
+	<select id="getProCusStatusGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				SUM(case when customer_status='0' then 1 else 0 end) as intention_cus,
+				SUM(case when customer_status='3' then 1 else 0 end) as survey_cus,
+				SUM(case when customer_status='5' then 1 else 0 end) as prospective_owner_cus,
+				SUM(case when customer_status='8' then 1 else 0 end) as owner_cus 
+			from v_customer 
+		]]>
+	</select>
+
+	<!-- getProCusLevelGroup : 获取所有项目客户级别分类统计数据 -->
+	<select id="getProCusLevelGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				SUM(case when customer_level=1 then 1 else 0 end) as one_houses,
+				SUM(case when customer_level=2 then 1 else 0 end) as two_houses,
+				SUM(case when customer_level=3 then 1 else 0 end) as three_houses,
+				SUM(case when customer_level >=4 then 1 else 0 end) as X_houses 
+			from v_customer
+		]]>
+	</select>
+
+	<!-- getProCusContractTimeGroup : 获取所有项目客户签约时间分布统计数据 -->
+	<select id="getProCusContractTimeGroup"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				SUM(case when (TIMESTAMPDIFF(DAY,contract_time,DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%S'))) BETWEEN 0 and 90 then 1 else 0 end) as one_three_month,
+				SUM(case when (TIMESTAMPDIFF(DAY,contract_time,DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%S'))) BETWEEN 91 and 180 then 1 else 0 end) as four_six_month,
+				SUM(case when (TIMESTAMPDIFF(DAY,contract_time,DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%S'))) BETWEEN 181 and 365 then 1 else 0 end) as six_twelve_month,
+				SUM(case when (TIMESTAMPDIFF(DAY,contract_time,DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%S')))>365 then 1 else 0 end) as one_year 
+			from d_project_houses 
+				where rec_status='1'
+		]]>
+	</select>
+
+	<!-- getProCusAgeGroup : 获取所有项目客户年龄分布统计数据 -->
+	<select id="getProCusAgeGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				SUM(case when t.customer_age BETWEEN 20 and 30 then 1 else 0 end) as age_range_2030,
+				SUM(case when t.customer_age BETWEEN 31 and 40 then 1 else 0 end) as age_range_3040,
+				SUM(case when t.customer_age BETWEEN 41 and 50 then 1 else 0 end) as age_range_4050,
+				SUM(case when t.customer_age BETWEEN 51 and 60 then 1 else 0 end) as age_range_5060 
+			from (select YEAR(NOW()) - YEAR(c.customer_birthdate) as customer_age from v_customer c) t
+		]]>
+	</select>
+
+	<!-- listCusTotalAndYesAdd : 获取项目客户总数，昨日新增数数据列表 -->
+	<select id="listCusTotalAndYesAdd" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				(select COUNT(1) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1' and c.customer_status in (5,8)) as cus_total,
+				(select IFNULL(SUM(case when TO_DAYS( NOW() ) - TO_DAYS(c.rec_time) <= 1 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1' and c.customer_status in (5,8)) as yes_add_cus 
+			from d_project t
+		]]>
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.rec_id =#{project_id}
+		</if>
+	</select>
+	
+	<!-- listProjectJfQyTotal : 获取项目客户总数，昨日新增交付、开放问题数数据列表 -->
+	<select id="listProjectJfQyTotal" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.proj_guid,
+				t.project_name,
+				(select COUNT(1) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1' and c.customer_status in (5,8)) as cus_total,
+				(select count(1) from d_project_houses p1 WHERE TO_DAYS( NOW() ) - TO_DAYS(p1.contract_time) <= 1 and t.proj_guid=p1.proj_guid and p1.rec_status='1') as qy_newly_added,
+				(select count(1) from d_project_houses p1 WHERE TO_DAYS( NOW() ) - TO_DAYS(p1.actual_delivery_time ) <= 1 and t.proj_guid=p1.proj_guid and p1.rec_status='1') as jf_newly_added 
+			from d_project t
+		]]>
+	</select>
+	
+	<!-- listProCusTypeGroup : 获取项目客户类型分类统计数据列表 -->
+	<select id="listProCusTypeGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				(select IFNULL(SUM(case when c.customer_type='1' then 1 else 0 end),0) from d_customer c left join	d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as ordinary_cus,
+				(select IFNULL(SUM(case when c.customer_type='2' then 1	else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as platinum_cus,
+				(select	IFNULL(SUM(case when c.customer_type='3' then 1 else 0 end),0) from	d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as partner_cus,
+				(select IFNULL(SUM(case when c.customer_type='4' then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as sensitive_cus,
+				(select IFNULL(SUM(case when c.customer_type='5' then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as special_cus	
+			from d_project t 
+		]]>
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.rec_id =#{project_id}
+		</if>
+	</select>
+
+	<!-- listProCusStatusGroup : 获取项目客户状态分类统计数据列表 -->
+	<select id="listProCusStatusGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				(select IFNULL(SUM(case when c.customer_status='0' then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as intention_cus,
+				(select IFNULL(SUM(case when c.customer_status='3' then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as survey_cus,
+				(select	IFNULL(SUM(case when c.customer_status='5' then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where	h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as prospective_owner_cus,
+				(select IFNULL(SUM(case	when c.customer_status='8' then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as owner_cus 
+			from d_project t
+		]]>
+
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.rec_id =#{project_id}
+		</if>
+	</select>
+
+	<!-- listProCusLevelGroup : 获取项目客户级别分类统计数据列表 -->
+	<select id="listProCusLevelGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				(select IFNULL(SUM(case when c.customer_level=1 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as one_houses,
+				(select IFNULL(SUM(case when c.customer_level=2 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as two_houses,
+				(select IFNULL(SUM(case when c.customer_level=3 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as three_houses,
+				(select IFNULL(SUM(case when c.customer_level >=4 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as X_houses 
+			from d_project t
+		]]>
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.rec_id =#{project_id}
+		</if>
+	</select>
+
+	<!-- listProCusContractTimeGroup :获取项目客户签约时间分布统计数据列表 -->
+	<select id="listProCusContractTimeGroup"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				(select IFNULL(SUM(case when (TIMESTAMPDIFF(DAY,h.contract_time,DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%S'))) BETWEEN 0 and 90 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as one_three_month,
+				(select IFNULL(SUM(case when (TIMESTAMPDIFF(DAY,h.contract_time,DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%S'))) BETWEEN 91 and 180 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as four_six_month,
+				(select IFNULL(SUM(case when (TIMESTAMPDIFF(DAY,h.contract_time,DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%S'))) BETWEEN 181 and 365 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as six_twelve_month,
+				(select IFNULL(SUM(case when (TIMESTAMPDIFF(DAY,h.contract_time,DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%S')))>365 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as one_year
+			from d_project t
+		]]>
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.rec_id =#{project_id}
+		</if>
+	</select>
+
+	<!-- listProCusAgeGroup :获取项目客户年龄分布统计数据列表 -->
+	<select id="listProCusAgeGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				(select IFNULL(SUM(case when YEAR(NOW()) - YEAR(c.customer_birthdate) BETWEEN 20 and 30 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as age_range_2030,
+				(select IFNULL(SUM(case when YEAR(NOW()) - YEAR(c.customer_birthdate) BETWEEN 31 and 40 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as age_range_3040,
+				(select IFNULL(SUM(case when YEAR(NOW()) - YEAR(c.customer_birthdate) BETWEEN 41 and 50 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as age_range_4050,
+				(select IFNULL(SUM(case when YEAR(NOW()) - YEAR(c.customer_birthdate) BETWEEN 51 and 60 then 1 else 0 end),0) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as age_range_5060 
+			from d_project t
+		]]>
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.rec_id =#{project_id}
+		</if>
+	</select>
+
+	<!-- listProCusBindGroup :获取项目阿隆官微绑定统计数据列表 -->
+	<select id="listProCusBindGroup" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.project_name,
+				(select COUNT(1) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as customer_total,
+				(select COUNT(1) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and c.along_follow='1' and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as along_bind,
+				(select COUNT(1) from d_customer c left join d_customer_houses ch on ch.customer_id=c.rec_id left join d_project_houses h on ch.house_id=h.rec_id where h.project_id=t.rec_id and official_micro_follow='1' and c.rec_status='1' and ch.rec_status='1' and h.rec_status='1') as official_bind 
+			from d_project t
+		]]>
+		where t.rec_status='1'
+		<if test="project_id != null and project_id != ''">
+			and t.rec_id =#{project_id}
+		</if>
+	</select>
+
+
+</mapper>

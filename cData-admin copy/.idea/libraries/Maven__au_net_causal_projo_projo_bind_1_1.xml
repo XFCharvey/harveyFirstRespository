@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: au.net.causal.projo:projo-bind:1.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/au/net/causal/projo/projo-bind/1.1/projo-bind-1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/au/net/causal/projo/projo-bind/1.1/projo-bind-1.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/au/net/causal/projo/projo-bind/1.1/projo-bind-1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

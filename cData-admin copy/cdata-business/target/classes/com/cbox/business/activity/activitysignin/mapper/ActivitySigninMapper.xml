@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.activity.activitysignin.mapper.ActivitySigninMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.activity_id,
+				a.project_id,
+				a.act_name,
+				a.act_attr,
+				a.act_img,
+				a.act_type,
+				a.begin_time,
+				a.end_time,
+				t.signin_phone,
+				t.signing_time,
+				c.customer_name,
+				c.customer_type,
+				c.customer_status,
+				c.customer_phone,
+				c.customer_lable,
+				c.customer_sex,
+				c.customer_id,
+				c.customer_addr,
+				c.customer_vocation,
+				c.customer_hobby,
+				c.official_micro_follow,
+				c.along_follow
+			from d_activity_signin t
+			left join d_customer c on t.signin_phone=c.customer_phone
+			left join d_activity a on t.activity_id=a.rec_id
+		]]>
+	</sql>
+
+	<!-- listActivitySignin : 获取活动签到列表数据 -->
+	<select id="listActivitySignin" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where 1=1
+		<if test="activity_id != null and activity_id != ''">
+			 and t.activity_id=#{activity_id}
+		</if>
+		<if test="signin_phone != null and signin_phone != ''">
+			 and t.signin_phone=#{signin_phone}
+		</if>
+		<if test="signing_time != null and signing_time != ''">
+			 and t.signing_time like concat(#{signing_time},'%')
+		</if>
+	</select>
+
+	<!-- getActivitySignin : 获取指定id的活动签到数据 -->
+	<select id="getActivitySignin" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.user.userworklog.mapper.UserWorklogMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.log_title,
+				t.log_content,
+				t.log_date,
+				t.log_person,
+				t.rec_time,
+				u.nick_name as user_name,
+				u.avatar
+			from d_user_worklog t
+			left join sys_user u on t.log_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listUserWorklog : 获取员工工作日志列表数据 -->
+	<select id="listUserWorklog" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where 1=1
+		<if test="log_title != null and log_title != ''">
+			and t.log_title like concat('%',#{log_title},'%')
+		</if>
+		<if test="log_date != null and log_date != ''">
+			and t.log_date like concat(#{log_date},'%')
+		</if>
+		<if test="rec_time != null and rec_time != ''">
+			and t.rec_time like concat(#{rec_time},'%')
+		</if>
+		<if test="log_person != null and log_person != ''">
+			and t.log_person=#{log_person}
+		</if>
+		ORDER BY t.rec_time DESC
+	</select>
+
+	<!-- getUserWorklog : 获取指定id的员工工作日志数据 -->
+	<select id="getUserWorklog" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		where t.rec_id=#{rec_id}
+	</select>
+
+	<!-- listUserWorklogByDeptId : 获取指定年月当前登陆用户团队及下级团队员工工作日志量列表数据 -->
+	<select id="listUserWorklogByDeptId" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+			w.rec_id,
+			w.log_title,
+			w.log_content,
+			w.log_date,
+			w.rec_time,
+			u.user_name,
+			u.nick_name,
+			u.avatar
+		from
+			d_user_worklog w
+			inner join
+			sys_user u on
+			w.log_person=u.user_name
+			inner
+			join sys_dept d on
+			u.dept_id=d.dept_id
+			and (d.dept_id=#{dept_id}
+			or
+			find_in_set(#{dept_id},d.ancestors))
+		where 1=1
+		<if test="year_month != null and year_month != ''">
+			and w.log_date like concat(#{year_month},'%')
+		</if>
+		<if test="workdate != null and workdate != ''">
+			and w.log_date like concat(#{workdate},'%')
+		</if>
+		ORDER BY w.rec_time DESC
+	</select>
+
+	<!-- listUserWorklogCountOfDay : 获取指定年月当前登陆用户团队及下级团队员工工作日志每日数量列表数据 -->
+	<select id="listUserWorklogCountOfDay"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+		w.log_date,
+		count(1) as
+		log_count
+		from d_user_worklog w
+		inner join sys_user u on
+		w.log_person=u.user_name
+		inner join sys_dept d on u.dept_id=d.dept_id
+		and (d.dept_id=#{dept_id}
+		or
+		find_in_set(#{dept_id},d.ancestors))
+		where
+		w.log_date like
+		concat(#{year_month},'%')
+		group by w.log_date
+		order by
+		w.log_date;
+	</select>
+
+</mapper>

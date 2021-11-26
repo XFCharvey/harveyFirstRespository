@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cbox.business.info.infopraise.mapper.InfoPraiseMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.info_id,
+				d.title_img,
+				d.publish_unit,
+				d.info_type,
+				t.activity_id,
+				a.act_name,
+				a.act_attr,
+				s.rec_lname,
+				s.menu_name,
+				t.p_person,
+				t.p_time,
+				u.nick_name as user_name,
+				u.avatar
+			from d_info_praise t
+			left join d_info d on t.info_id=d.rec_id
+			left join d_activity a on t.activity_id=a.rec_id
+			left join s_info_menu s on d.info_menuid=s.rec_id
+			left join sys_user u on t.p_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listInfoPraise : 获取资讯点赞列表数据 -->
+	<select id="listInfoPraise" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+		where 1=1
+		<if test="info_id != null and info_id != ''">
+			and t.info_id=#{info_id}
+		</if>
+		<if test="activity_id != null and activity_id != ''">
+			and t.activity_id=#{activity_id}
+		</if>
+		<if test="p_person != null and p_person != ''">
+			and t.p_person=#{p_person}
+		</if>
+		<if test="p_time != null and p_time != ''">
+			and t.p_time like concat(#{p_time},'%')
+		</if>
+	</select>
+
+	<!-- getInfoPraise : 获取指定id的资讯点赞数据 -->
+	<select id="getInfoPraise" parameterType="java.util.Map"
+		resultType="java.util.HashMap">
+		<include refid="selectVO" />
+
+		and t.rec_id=#{rec_id}
+	</select>
+
+	<!-- getUserInfoPraiseTotal : 获取指定用户资讯点赞数 -->
+	<select id="getUserInfoPraiseTotal"
+		parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+		count(rec_id) as infoPraiseTotal
+		from d_info_praise
+		where p_person=#{p_person} and
+		p_time like concat(#{p_time},'%')
+	</select>
+
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.project.projectcquestion.mapper.ProjectCQuestionMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.complain_id,
+				t.question_type,
+				t.question_name,
+				t.num,
+				t.rate,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_project_complain_question t
+			left join sys_user u on t.rec_person=u.user_name
+			left join d_project_complain c on t.complain_id=c.rec_id
+		]]>
+	</sql>
+
+	<!-- listProjectCQuestion : 获取项目投诉/维修的存在问题列表数据 -->
+	<select id="listProjectCQuestion" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where 1=1
+		<if test="complain_id != null and complain_id != ''">
+			 and t.complain_id like concat('%',#{complain_id},'%')
+		</if>
+		<if test="question_type != null and question_type != ''">
+			 and t.question_type like concat('%',#{question_type},'%')
+		</if>
+		<if test="question_name != null and question_name != ''">
+			 and t.question_name like concat('%',#{question_name},'%')
+		</if>
+		<if test="num != null and num != ''">
+			 and t.num like concat('%',#{num},'%')
+		</if>
+		<if test="rate != null and rate != ''">
+			 and t.rate like concat('%',#{rate},'%')
+		</if>
+		ORDER BY t.num DESC limit 0,10
+	</select>
+
+	<!-- getProjectCQuestion : 获取指定id的项目投诉/维修的存在问题数据 -->
+	<select id="getProjectCQuestion" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_id=#{rec_id}
+	</select>
+
+</mapper>

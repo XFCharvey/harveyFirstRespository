@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.hdayinfomanage.mapper.HdayInfoManageMapper">
+
+	<!-- 查询对象 -->
+	<sql id="selectVO">
+		<![CDATA[
+			select 
+				t.rec_id,
+				t.holiday_date,
+				t.date_name,
+				t.sex,
+				t.content,
+				t.rec_status,
+				t.rec_person,
+				t.rec_time,
+				t.rec_updateperson,
+				t.rec_updatetime,
+				u.nick_name as user_name
+			from d_holiday_info t
+			left join sys_user u on t.rec_person=u.user_name
+		]]>
+	</sql>
+
+	<!-- listHdayInfoManage : 获取节日信息管理列表数据 -->
+	<select id="listHdayInfoManage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		<if test="holiday_date != null and holiday_date != ''">
+			 and t.holiday_date like concat('%',#{holiday_date},'%')
+		</if>
+		<if test="date_name != null and date_name != ''">
+			 and t.date_name like concat('%',#{date_name},'%')
+		</if>
+	</select>
+
+	<!-- getHdayInfoManage : 获取指定id的节日信息管理数据 -->
+	<select id="getHdayInfoManage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<include refid="selectVO"/>
+
+		where t.rec_status='1'
+		and t.rec_id=#{rec_id}
+	</select>
+
+</mapper>
